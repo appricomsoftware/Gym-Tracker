@@ -121,7 +121,18 @@ class GymDB {
             const tx = this.db.transaction('machines', 'readonly');
             const store = tx.objectStore('machines');
             const req = store.getAll();
-            req.onsuccess = () => resolve(req.result || []);
+            req.onsuccess = () => {
+                const machines = req.result || [];
+                machines.sort((a, b) => {
+                    const ao = a.order;
+                    const bo = b.order;
+                    if (ao != null && bo != null && ao !== bo) return ao - bo;
+                    if (ao != null && bo == null) return -1;
+                    if (ao == null && bo != null) return 1;
+                    return new Date(a.createdAt || 0) - new Date(b.createdAt || 0);
+                });
+                resolve(machines);
+            };
             req.onerror = () => reject(req.error);
         });
     }
@@ -148,9 +159,22 @@ class GymDB {
         return new Promise((resolve, reject) => {
             const tx = this.db.transaction('machines', 'readwrite');
             const store = tx.objectStore('machines');
-            const req = store.put(machine);
-            req.onsuccess = () => resolve(machine);
-            req.onerror = () => reject(req.error);
+            const finish = () => {
+                const req = store.put(machine);
+                req.onsuccess = () => resolve(machine);
+                req.onerror = () => reject(req.error);
+            };
+            if (machine.order == null) {
+                const allReq = store.getAll();
+                allReq.onsuccess = () => {
+                    const max = Math.max(0, ...(allReq.result || []).map(m => Number(m.order) || 0));
+                    machine.order = max + 1;
+                    finish();
+                };
+                allReq.onerror = () => reject(allReq.error);
+            } else {
+                finish();
+            }
         });
     }
 

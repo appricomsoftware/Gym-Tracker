@@ -371,6 +371,9 @@ async function seedDemoData() {
 async function refreshAllData() {
     state.splitDays = await gymDB.getAllSplitDays();
     state.machines = await gymDB.getAllMachines();
+    if (state.machines.some(m => m.order == null)) {
+        await persistMachineListOrder(state.machines.map(m => m.id));
+    }
 
     renderDaysPills();
     renderMachinesGrid();
@@ -447,7 +450,7 @@ function updateActiveDayLabel() {
     }
 }
 
-// Render Grid of Machine Cubes (Compact cubes - at least 6 visible above the fold)
+// Render machine list rows (drag handle + tap to log + info)
 function renderMachinesGrid() {
     const grid = document.getElementById('machines-grid');
     const emptyState = document.getElementById('machines-empty-state');
@@ -479,49 +482,151 @@ function renderMachinesGrid() {
 
     const unitKg = I18N.t('unit_kg');
     const detailsHint = I18N.t('btn_open_details');
+    const dragHint = I18N.t('drag_to_reorder');
 
     grid.innerHTML = filtered.map(machine => {
-        // Find split day color and primary day info
         let primaryColor = '#10b981';
-        let dayName = '';
         if (machine.days && machine.days.length > 0) {
             const dayObj = state.splitDays.find(d => d.id === machine.days[0]);
-            if (dayObj) {
-                if (dayObj.color) primaryColor = dayObj.color;
-                dayName = dayObj.name;
-            }
+            if (dayObj && dayObj.color) primaryColor = dayObj.color;
         }
 
-        const mediaContent = machine.photoBase64
-            ? `<img src="${machine.photoBase64}" alt="${escapeHtml(machine.name)}" class="cube-thumb">`
-            : `<div class="cube-placeholder"><i class="fa-solid fa-dumbbell" style="color: ${primaryColor}88;"></i></div>`;
+        const thumb = machine.photoBase64
+            ? `<img src="${machine.photoBase64}" alt="${escapeHtml(machine.name)}" class="row-thumb-img">`
+            : `<div class="row-thumb-placeholder"><i class="fa-solid fa-dumbbell" style="color: ${primaryColor}99;"></i></div>`;
 
-        let lastBadge = '';
-        if (machine.lastWeight) {
-            lastBadge = `<div class="cube-last-badge"><i class="fa-solid fa-check"></i> ${machine.lastWeight} ${unitKg}</div>`;
-        }
+        const lastNote = machine.lastWeight
+            ? `<span class="row-last">${machine.lastWeight} ${unitKg}</span>`
+            : '';
 
         return `
-            <div class="machine-cube" onclick="openLogWorkoutModal('${machine.id}')" data-machine-id="${machine.id}">
-                <div class="cube-media">
-                    <div class="cube-day-strip" style="background: ${primaryColor};"></div>
-                    ${mediaContent}
-                    ${lastBadge}
-                </div>
-
-                <div class="cube-body">
-                    <div class="cube-title" title="${escapeHtml(machine.name)}">${escapeHtml(machine.name)}</div>
-                    <div class="cube-specs-row">
-                        <span class="cube-weight-badge">${machine.defaultWeight || 0} ${unitKg}</span>
-                        <span class="cube-reps-badge">${machine.defaultSets || 3}×${machine.defaultReps || 10}</span>
-                    </div>
-                </div>
-                <button type="button" class="cube-details-btn" title="${detailsHint}" aria-label="${detailsHint}" onclick="event.stopPropagation(); openMachineDetailsModal('${machine.id}')">
+            <div class="machine-row" data-machine-id="${machine.id}">
+                <span class="row-day-strip" style="background: ${primaryColor};"></span>
+                <button type="button" class="row-drag-handle" title="${dragHint}" aria-label="${dragHint}">
+                    <i class="fa-solid fa-grip-lines"></i>
+                </button>
+                <div class="row-thumb">${thumb}</div>
+                <button type="button" class="row-main" onclick="openLogWorkoutModal('${machine.id}')">
+                    <span class="row-title" title="${escapeHtml(machine.name)}">${escapeHtml(machine.name)}</span>
+                    <span class="row-meta">
+                        <span class="row-weight">${machine.defaultWeight || 0} ${unitKg}</span>
+                        <span class="row-reps">${machine.defaultSets || 3}×${machine.defaultReps || 10}</span>
+                        ${lastNote}
+                    </span>
+                </button>
+                <button type="button" class="row-details-btn" title="${detailsHint}" aria-label="${detailsHint}" onclick="openMachineDetailsModal('${machine.id}')">
                     <i class="fa-solid fa-circle-info"></i>
                 </button>
             </div>
         `;
     }).join('');
+
+    setupMachineRowDrag();
+}
+
+function compareMachineOrder(a, b) {
+    const ao = a.order;
+    const bo = b.order;
+    if (ao != null && bo != null && ao !== bo) return ao - bo;
+    if (ao != null && bo == null) return -1;
+    if (ao == null && bo != null) return 1;
+    return new Date(a.createdAt || 0) - new Date(b.createdAt || 0);
+}
+
+function setupMachineRowDrag() {
+    const list = document.getElementById('machines-grid');
+    if (!list) return;
+
+    list.querySelectorAll('.row-drag-handle').forEach(handle => {
+        handle.addEventListener('pointerdown', (e) => {
+            if (e.button != null && e.button !== 0) return;
+            const row = handle.closest('.machine-row');
+            if (!row) return;
+            e.preventDefault();
+            e.stopPropagation();
+
+            row.classList.add('dragging');
+            row.style.pointerEvents = 'none';
+            try { handle.setPointerCapture(e.pointerId); } catch (_) { /* ignore */ }
+
+            const moveRowAt = (clientX, clientY) => {
+                const rows = [...list.querySelectorAll('.machine-row')];
+                const over = rows.find((candidate) => {
+                    if (candidate === row) return false;
+                    const box = candidate.getBoundingClientRect();
+                    return clientY >= box.top && clientY <= box.bottom;
+                });
+                if (!over) return;
+                const dragIdx = rows.indexOf(row);
+                const overIdx = rows.indexOf(over);
+                if (dragIdx < 0 || overIdx < 0) return;
+                if (dragIdx < overIdx) over.after(row);
+                else over.before(row);
+            };
+
+            const onMove = (ev) => {
+                ev.preventDefault();
+                moveRowAt(ev.clientX, ev.clientY);
+            };
+
+            let finished = false;
+            const onUp = async () => {
+                if (finished) return;
+                finished = true;
+                row.classList.remove('dragging');
+                row.style.pointerEvents = '';
+                document.removeEventListener('pointermove', onMove);
+                document.removeEventListener('pointerup', onUp);
+                document.removeEventListener('pointercancel', onUp);
+                try { handle.releasePointerCapture(e.pointerId); } catch (_) { /* ignore */ }
+                const ids = [...list.querySelectorAll('.machine-row')].map(r => r.dataset.machineId);
+                await persistMachineListOrder(ids);
+            };
+
+            document.addEventListener('pointermove', onMove);
+            document.addEventListener('pointerup', onUp);
+            document.addEventListener('pointercancel', onUp);
+        });
+    });
+}
+
+async function persistMachineListOrder(visibleIds) {
+    const uniqueVisible = [...new Set((visibleIds || []).filter(Boolean))];
+    if (!uniqueVisible.length) return;
+
+    const byId = new Map(state.machines.map(machine => [machine.id, machine]));
+    const visibleSet = new Set(uniqueVisible);
+    const allSorted = [...state.machines].sort(compareMachineOrder);
+
+    const rebuilt = [];
+    const used = new Set();
+    let nextVisible = 0;
+    for (const machine of allSorted) {
+        let next = machine;
+        if (visibleSet.has(machine.id)) {
+            next = byId.get(uniqueVisible[nextVisible++]) || machine;
+        }
+        if (!next || used.has(next.id)) continue;
+        used.add(next.id);
+        rebuilt.push(next);
+    }
+    for (const machine of allSorted) {
+        if (!used.has(machine.id)) {
+            used.add(machine.id);
+            rebuilt.push(machine);
+        }
+    }
+
+    const updates = [];
+    rebuilt.forEach((machine, index) => {
+        const nextOrder = index + 1;
+        if (machine.order !== nextOrder) {
+            machine.order = nextOrder;
+            updates.push(gymDB.saveMachine(machine));
+        }
+    });
+    state.machines = rebuilt;
+    if (updates.length) await Promise.all(updates);
 }
 
 // Open Machine Details Modal (The rich popup for the machine)
@@ -782,7 +887,17 @@ async function handleSaveMachineForm(e) {
     };
 
     if (id) {
+        const existing = state.machines.find(m => m.id === id);
         machineData.id = id;
+        if (existing) {
+            machineData.order = existing.order;
+            machineData.createdAt = existing.createdAt;
+            machineData.lastWeight = existing.lastWeight;
+            machineData.lastReps = existing.lastReps;
+            machineData.lastSets = existing.lastSets;
+            machineData.lastRepsPerSet = existing.lastRepsPerSet;
+            machineData.lastDate = existing.lastDate;
+        }
     }
 
     try {
@@ -1790,6 +1905,31 @@ function bumpWheelValue(input, delta, min) {
     input.value = next;
 }
 
+function commitWheelValue(input, min, step) {
+    let val = parseFloat(input.value);
+    if (Number.isNaN(val) || val < min) val = min;
+    if (Math.abs(step) % 1 !== 0) {
+        val = Math.round(val * 10) / 10;
+    } else {
+        val = Math.round(val);
+    }
+    input.value = val;
+}
+
+function beginWheelEdit(col, input) {
+    col.classList.remove('swiping');
+    col.classList.add('editing');
+    input.readOnly = false;
+    input.focus({ preventScroll: true });
+    input.select();
+}
+
+function endWheelEdit(col, input, min, step) {
+    commitWheelValue(input, min, step);
+    input.readOnly = true;
+    col.classList.remove('editing');
+}
+
 function setupWheelSteppers() {
     document.querySelectorAll('.wheel-stepper').forEach(col => {
         if (col.dataset.bound === '1') return;
@@ -1801,28 +1941,40 @@ function setupWheelSteppers() {
 
         col.querySelector('.wheel-plus')?.addEventListener('click', (e) => {
             e.preventDefault();
+            if (col.classList.contains('editing')) endWheelEdit(col, input, min, step);
             bumpWheelValue(input, step, min);
         });
         col.querySelector('.wheel-minus')?.addEventListener('click', (e) => {
             e.preventDefault();
+            if (col.classList.contains('editing')) endWheelEdit(col, input, min, step);
             bumpWheelValue(input, -step, min);
         });
 
         let startY = null;
         let acc = 0;
+        let didSwipe = false;
+        let startOnValue = false;
+
         col.addEventListener('pointerdown', (e) => {
             if (e.target.closest('button')) return;
+            if (col.classList.contains('editing')) return;
             startY = e.clientY;
             acc = 0;
-            col.setPointerCapture(e.pointerId);
-            col.classList.add('swiping');
+            didSwipe = false;
+            startOnValue = !!e.target.closest('.wheel-value');
         });
         col.addEventListener('pointermove', (e) => {
-            if (startY === null) return;
+            if (startY === null || col.classList.contains('editing')) return;
             const dy = startY - e.clientY;
             acc += dy;
             startY = e.clientY;
             const threshold = 20;
+            if (!didSwipe && Math.abs(acc) < threshold) return;
+            if (!didSwipe) {
+                didSwipe = true;
+                try { col.setPointerCapture(e.pointerId); } catch (_) { /* ignore */ }
+                col.classList.add('swiping');
+            }
             while (acc >= threshold) {
                 bumpWheelValue(input, step, min);
                 acc -= threshold;
@@ -1832,15 +1984,41 @@ function setupWheelSteppers() {
                 acc += threshold;
             }
         });
-        const endSwipe = () => {
+        const finishPointer = () => {
+            const shouldEdit = startOnValue && !didSwipe && startY !== null;
             startY = null;
             acc = 0;
+            startOnValue = false;
             col.classList.remove('swiping');
+            if (shouldEdit) beginWheelEdit(col, input);
+            didSwipe = false;
         };
-        col.addEventListener('pointerup', endSwipe);
-        col.addEventListener('pointercancel', endSwipe);
+        col.addEventListener('pointerup', finishPointer);
+        col.addEventListener('pointercancel', () => {
+            startY = null;
+            acc = 0;
+            didSwipe = false;
+            startOnValue = false;
+            col.classList.remove('swiping');
+        });
+
+        input.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                input.blur();
+            }
+            if (e.key === 'Escape') {
+                e.preventDefault();
+                input.blur();
+            }
+        });
+        input.addEventListener('blur', () => {
+            if (!col.classList.contains('editing')) return;
+            endWheelEdit(col, input, min, step);
+        });
 
         col.addEventListener('wheel', (e) => {
+            if (col.classList.contains('editing')) return;
             e.preventDefault();
             bumpWheelValue(input, e.deltaY < 0 ? step : -step, min);
         }, { passive: false });

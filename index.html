@@ -26,7 +26,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <!-- App Stylesheet -->
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/style.css?v=7">
 </head>
 <body>
 
@@ -109,9 +109,9 @@
                 </div>
             </div>
 
-            <!-- Machines Grid -->
+            <!-- Machines list -->
             <div id="machines-grid" class="machines-grid">
-                <!-- Machine Cards injected by JS -->
+                <!-- Machine rows injected by JS -->
             </div>
 
             <!-- Empty State -->
@@ -554,25 +554,25 @@
                         <div class="wheel-stepper-grid">
                             <div class="wheel-stepper wheel-stepper-weight" data-step="2.5" data-min="0">
                                 <button type="button" class="wheel-plus" aria-label="+">+</button>
-                                <input type="number" id="log-weight" class="wheel-value" value="50" step="2.5" min="0" inputmode="decimal" required>
+                                <input type="number" id="log-weight" class="wheel-value" value="50" step="2.5" min="0" inputmode="decimal" readonly required>
                                 <button type="button" class="wheel-minus" aria-label="-">−</button>
                                 <span class="wheel-label" data-i18n="unit_kg">ק"ג</span>
                             </div>
                             <div class="wheel-stepper" data-step="1" data-min="0">
                                 <button type="button" class="wheel-plus" aria-label="+">+</button>
-                                <input type="number" id="log-reps-1" class="wheel-value" value="8" step="1" min="0" inputmode="numeric" required>
+                                <input type="number" id="log-reps-1" class="wheel-value" value="8" step="1" min="0" inputmode="numeric" readonly required>
                                 <button type="button" class="wheel-minus" aria-label="-">−</button>
                                 <span class="wheel-label" data-i18n-set="1">סט 1</span>
                             </div>
                             <div class="wheel-stepper" data-step="1" data-min="0">
                                 <button type="button" class="wheel-plus" aria-label="+">+</button>
-                                <input type="number" id="log-reps-2" class="wheel-value" value="9" step="1" min="0" inputmode="numeric" required>
+                                <input type="number" id="log-reps-2" class="wheel-value" value="9" step="1" min="0" inputmode="numeric" readonly required>
                                 <button type="button" class="wheel-minus" aria-label="-">−</button>
                                 <span class="wheel-label" data-i18n-set="2">סט 2</span>
                             </div>
                             <div class="wheel-stepper" data-step="1" data-min="0">
                                 <button type="button" class="wheel-plus" aria-label="+">+</button>
-                                <input type="number" id="log-reps-3" class="wheel-value" value="9" step="1" min="0" inputmode="numeric" required>
+                                <input type="number" id="log-reps-3" class="wheel-value" value="9" step="1" min="0" inputmode="numeric" readonly required>
                                 <button type="button" class="wheel-minus" aria-label="-">−</button>
                                 <span class="wheel-label" data-i18n-set="3">סט 3</span>
                             </div>
@@ -748,8 +748,8 @@
     <div id="toast-container" class="toast-container"></div>
 
     <!-- Scripts -->
-    <script src="js/translations.js"></script>
-    <script src="js/db.js"></script>
-    <script src="js/app.js"></script>
+    <script src="js/translations.js?v=7"></script>
+    <script src="js/db.js?v=7"></script>
+    <script src="js/app.js?v=7"></script>
 </body>
 </html>
