@@ -1,7 +1,8 @@
 /**
  * GymMaster - Main Application Logic
  * Supports Gym Machines management, split days, photo capture & optimization,
- * workout logging, trend visualization with Chart.js, and local IndexedDB backup/restore.
+ * workout logging, trend visualization with Chart.js, multi-language internationalization (he, en, ar, ru),
+ * and local IndexedDB backup/restore.
  */
 
 // Global State
@@ -17,18 +18,18 @@ const state = {
 
 // Available Icons for Workout Day Splits
 const SPLIT_ICONS = [
-    { icon: 'fa-dumbbell', label: 'משקולת' },
-    { icon: 'fa-arrows-up-down', label: 'משיכה/גב' },
-    { icon: 'fa-person-running', label: 'רגליים/ריצה' },
-    { icon: 'fa-hand-back-fist', label: 'זרועות/אגרוף' },
-    { icon: 'fa-fire', label: 'כוח/אנרגיה' },
-    { icon: 'fa-heart-pulse', label: 'אירובי/דופק' },
-    { icon: 'fa-stopwatch', label: 'אינטרוולים' },
-    { icon: 'fa-bolt', label: 'כוח מתפרץ' },
-    { icon: 'fa-shield-halved', label: 'בטן/ליבה' },
-    { icon: 'fa-award', label: 'שיא PR' },
-    { icon: 'fa-bullseye', label: 'מטרה' },
-    { icon: 'fa-weight-hanging', label: 'משקל כבד' }
+    { icon: 'fa-dumbbell' },
+    { icon: 'fa-arrows-up-down' },
+    { icon: 'fa-person-running' },
+    { icon: 'fa-hand-back-fist' },
+    { icon: 'fa-fire' },
+    { icon: 'fa-heart-pulse' },
+    { icon: 'fa-stopwatch' },
+    { icon: 'fa-bolt' },
+    { icon: 'fa-shield-halved' },
+    { icon: 'fa-award' },
+    { icon: 'fa-bullseye' },
+    { icon: 'fa-weight-hanging' }
 ];
 
 // Available Theme Colors for Workout Day Splits
@@ -45,60 +46,6 @@ const SPLIT_COLORS = [
     '#84cc16'  // Lime
 ];
 
-// Popular Pre-built Workout Split Templates
-const PRESET_TEMPLATES = [
-    {
-        id: 'ppl',
-        title: 'Push / Pull / Legs (PPL)',
-        description: 'הפיצול הפופולרי ביותר – חלוקה לדחיפה, משיכה ורגליים (3-6 אימונים בשבוע)',
-        days: [
-            { name: 'Push (חזה, כתפיים, יד אחורית)', icon: 'fa-dumbbell', color: '#06b6d4', schedule: 'יום א\' ו-ד\'' },
-            { name: 'Pull (גב ויד קדמית)', icon: 'fa-arrows-up-down', color: '#10b981', schedule: 'יום ב\' ו-ה\'' },
-            { name: 'Legs & Core (רגליים ובטן)', icon: 'fa-person-running', color: '#f59e0b', schedule: 'יום ג\' ו-ו\'' }
-        ]
-    },
-    {
-        id: 'upper_lower',
-        title: 'עליון / תחתון (Upper / Lower)',
-        description: 'חלוקה ל-4 אימונים שבועיים: פלג גוף עליון ותחתון לסירוגין',
-        days: [
-            { name: 'Upper Body (פלג גוף עליון)', icon: 'fa-dumbbell', color: '#38bdf8', schedule: 'אימון עליון א\' / ג\'' },
-            { name: 'Lower Body (פלג גוף תחתון)', icon: 'fa-person-running', color: '#ec4899', schedule: 'אימון תחתון ב\' / ד\'' }
-        ]
-    },
-    {
-        id: 'classic_3',
-        title: 'קלאסי 3 ימים (Arnold / Split)',
-        description: 'חלוקת שרירים קלאסית ומאוזנת לשלושה ימי אימון ממוקדים',
-        days: [
-            { name: 'חזה וכתפיים', icon: 'fa-dumbbell', color: '#06b6d4', schedule: 'יום ראשון' },
-            { name: 'גב ויד קדמית', icon: 'fa-arrows-up-down', color: '#10b981', schedule: 'יום שלישי' },
-            { name: 'רגליים ויד אחורית', icon: 'fa-person-running', color: '#f59e0b', schedule: 'יום חמישי' }
-        ]
-    },
-    {
-        id: 'weekdays_5',
-        title: 'ימי השבוע (ראשון עד חמישי)',
-        description: 'שמות ימים ישירים ומסודרים לפי סדר ימי השבוע',
-        days: [
-            { name: 'יום ראשון', icon: 'fa-dumbbell', color: '#38bdf8', schedule: 'אימון פתיחת שבוע' },
-            { name: 'יום שני', icon: 'fa-arrows-up-down', color: '#10b981', schedule: 'אימון שני' },
-            { name: 'יום שלישי', icon: 'fa-person-running', color: '#f59e0b', schedule: 'אימון אמצע שבוע' },
-            { name: 'יום רביעי', icon: 'fa-hand-back-fist', color: '#ec4899', schedule: 'אימון רביעי' },
-            { name: 'יום חמישי', icon: 'fa-fire', color: '#8b5cf6', schedule: 'אימון סגירת שבוע' }
-        ]
-    },
-    {
-        id: 'fbw',
-        title: 'אימון כללי (Full Body Workout)',
-        description: '2-3 אימונים בשבוע המשלבים את כל קבוצות השרירים',
-        days: [
-            { name: 'אימון A - כללי (חזה, גב, רגליים)', icon: 'fa-fire', color: '#10b981', schedule: 'יום ראשון' },
-            { name: 'אימון B - כללי (כתפיים, ידיים, בטן)', icon: 'fa-bolt', color: '#06b6d4', schedule: 'יום רביעי' }
-        ]
-    }
-];
-
 // ==========================================
 // 1. CUSTOM POPUP SYSTEM
 // User Rule: "never use basic alert , always create a nice popup"
@@ -112,73 +59,72 @@ const Popup = {
         toastEl.className = `toast ${type}`;
 
         let iconClass = 'fa-info-circle';
-        if (type === 'success') iconClass = 'fa-check-circle';
-        if (type === 'error') iconClass = 'fa-circle-exclamation';
+        if (type === 'success') iconClass = 'fa-circle-check';
         if (type === 'warning') iconClass = 'fa-triangle-exclamation';
+        if (type === 'danger') iconClass = 'fa-circle-xmark';
 
         toastEl.innerHTML = `
-            <i class="fa-solid ${iconClass} toast-icon"></i>
-            <div style="flex: 1;">${message}</div>
+            <div class="toast-icon"><i class="fa-solid ${iconClass}"></i></div>
+            <div class="toast-msg">${escapeHtml(message)}</div>
         `;
 
         container.appendChild(toastEl);
 
         setTimeout(() => {
-            toastEl.classList.add('toast-exit');
+            toastEl.style.animation = 'fadeOut 0.25s forwards';
             setTimeout(() => toastEl.remove(), 260);
         }, duration);
     },
 
-    alert(title, message, iconType = 'info') {
+    alert(title, message, type = 'info') {
         return new Promise((resolve) => {
             const overlay = document.getElementById('custom-popup');
-            const iconWrap = document.getElementById('popup-icon');
+            const iconEl = document.getElementById('popup-icon');
             const titleEl = document.getElementById('popup-title');
             const msgEl = document.getElementById('popup-message');
             const actionsEl = document.getElementById('popup-actions');
 
-            iconWrap.className = `popup-icon-wrap ${iconType}`;
-            let iconMarkup = '<i class="fa-solid fa-circle-info"></i>';
-            if (iconType === 'success') iconMarkup = '<i class="fa-solid fa-circle-check"></i>';
-            if (iconType === 'danger' || iconType === 'error') iconMarkup = '<i class="fa-solid fa-triangle-exclamation"></i>';
-            if (iconType === 'warning') iconMarkup = '<i class="fa-solid fa-circle-exclamation"></i>';
-            iconWrap.innerHTML = iconMarkup;
+            iconEl.className = `popup-icon-wrap ${type}`;
+            let iconClass = 'fa-circle-info';
+            if (type === 'success') iconClass = 'fa-circle-check';
+            if (type === 'danger') iconClass = 'fa-triangle-exclamation';
+            if (type === 'warning') iconClass = 'fa-triangle-exclamation';
 
+            iconEl.innerHTML = `<i class="fa-solid ${iconClass}"></i>`;
             titleEl.textContent = title;
             msgEl.textContent = message;
 
+            const understandText = typeof I18N !== 'undefined' ? I18N.t('popup_understand') : 'הבנתי, תודה';
             actionsEl.innerHTML = `
-                <button class="btn btn-primary btn-lg" id="popup-confirm-btn" style="width: 100%;">
-                    <span>הבנתי, תודה</span>
-                </button>
+                <button class="btn btn-primary" id="popup-ok-btn">${understandText}</button>
             `;
 
             overlay.classList.add('show');
 
-            const confirmBtn = document.getElementById('popup-confirm-btn');
-            const cleanup = () => {
+            const okBtn = document.getElementById('popup-ok-btn');
+            const close = () => {
                 overlay.classList.remove('show');
-                confirmBtn.removeEventListener('click', onClick);
-                resolve();
+                resolve(true);
             };
-            const onClick = () => cleanup();
-            confirmBtn.addEventListener('click', onClick);
+
+            okBtn.onclick = close;
         });
     },
 
-    confirm(title, message, { confirmText = 'אישור', cancelText = 'ביטול', danger = false, iconType = 'warning' } = {}) {
+    confirm(title, message, options = {}) {
         return new Promise((resolve) => {
             const overlay = document.getElementById('custom-popup');
-            const iconWrap = document.getElementById('popup-icon');
+            const iconEl = document.getElementById('popup-icon');
             const titleEl = document.getElementById('popup-title');
             const msgEl = document.getElementById('popup-message');
             const actionsEl = document.getElementById('popup-actions');
 
-            iconWrap.className = `popup-icon-wrap ${danger ? 'danger' : iconType}`;
-            let iconMarkup = '<i class="fa-solid fa-circle-question"></i>';
-            if (danger) iconMarkup = '<i class="fa-solid fa-triangle-exclamation"></i>';
-            iconWrap.innerHTML = iconMarkup;
+            const danger = options.danger || false;
+            const confirmText = options.confirmText || (typeof I18N !== 'undefined' ? I18N.t('btn_delete_confirm') : 'אישור');
+            const cancelText = options.cancelText || (typeof I18N !== 'undefined' ? I18N.t('btn_cancel') : 'ביטול');
 
+            iconEl.className = `popup-icon-wrap ${danger ? 'danger' : 'warning'}`;
+            iconEl.innerHTML = `<i class="fa-solid ${danger ? 'fa-triangle-exclamation' : 'fa-circle-question'}"></i>`;
             titleEl.textContent = title;
             msgEl.textContent = message;
 
@@ -208,14 +154,14 @@ const Popup = {
         const caption = document.getElementById('lightbox-caption');
 
         img.src = src;
-        caption.textContent = title || 'תמונת מכשיר';
+        caption.textContent = title || (typeof I18N !== 'undefined' ? I18N.t('details_modal_title') : 'תמונת מכשיר');
         modal.classList.add('show');
     }
 };
 
 // Safe fallback for window.alert
 window.alert = (msg) => {
-    Popup.alert('הודעה', msg);
+    Popup.alert('GymMaster', msg);
 };
 
 // ==========================================
@@ -260,7 +206,7 @@ function compressImage(file, maxDimension = 900, quality = 0.82) {
 }
 
 // Sample placeholder images for seed machines
-function createMachineIconSvg(color1 = '#10b981', color2 = '#06b6d4', iconType = 'dumbbell') {
+function createMachineIconSvg(color1 = '#10b981', color2 = '#06b6d4') {
     const svg = `
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 400" width="100%" height="100%">
         <defs>
@@ -274,12 +220,11 @@ function createMachineIconSvg(color1 = '#10b981', color2 = '#06b6d4', iconType =
             </linearGradient>
         </defs>
         <rect width="600" height="400" fill="url(#bgGrad)" />
-        <circle cx="300" cy="200" r="100" fill="none" stroke="url(#accentGrad)" stroke-width="6" opacity="0.4" />
-        <circle cx="300" cy="200" r="120" fill="none" stroke="url(#accentGrad)" stroke-width="2" stroke-dasharray="10 10" opacity="0.3" />
-        <g fill="url(#accentGrad)" transform="translate(240, 140) scale(2.5)">
+        <circle cx="300" cy="180" r="105" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="2" />
+        <g fill="url(#accentGrad)" transform="translate(235, 115) scale(5.2)">
             <path d="M12 2a2 2 0 0 1 2 2v2h4a2 2 0 0 1 2 2v2a2 2 0 0 1-2 2h-4v4h4a2 2 0 0 1 2 2v2a2 2 0 0 1-2 2h-4v2a2 2 0 1 1-4 0v-2H8a2 2 0 0 1-2-2v-2a2 2 0 0 1 2-2h4v-4H8a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4V4a2 2 0 0 1 2-2z"/>
         </g>
-        <text x="300" y="325" fill="#94a3b8" font-size="22" font-family="Rubik, sans-serif" text-anchor="middle" font-weight="600">Gym Equipment</text>
+        <text x="300" y="325" fill="#94a3b8" font-size="22" font-family="Rubik, Cairo, sans-serif" text-anchor="middle" font-weight="600">Gym Equipment</text>
     </svg>`;
     return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
 }
@@ -289,135 +234,133 @@ function createMachineIconSvg(color1 = '#10b981', color2 = '#06b6d4', iconType =
 // ==========================================
 async function initApp() {
     try {
+        // 1. Initialize Internationalization (Hebrew, English, Arabic, Russian)
+        I18N.init();
+
+        // 2. Initialize IndexedDB
         await gymDB.init();
 
+        // 3. Refresh and render all data
         await refreshAllData();
+
+        // 4. Setup listeners and controls
         setupEventListeners();
         setupNavigation();
         setupStepperControls();
         setupLightbox();
+        registerServiceWorker();
 
-        Popup.toast('GymMaster נטען בהצלחה! ברוך הבא לאימון.', 'success');
+        Popup.toast(I18N.t('msg_app_loaded'), 'success');
     } catch (err) {
         console.error('Initialization error:', err);
-        Popup.alert('שגיאה באתחול', 'אירעה שגיאה בטעינת מאגר הנתונים המקומי: ' + err.message, 'danger');
+        Popup.alert('Error', (typeof I18N !== 'undefined' ? I18N.t('msg_db_error') : 'Database Error: ') + ' ' + err.message, 'danger');
     }
 }
 
-// Initial demo data for rich first-run experience
-async function seedDemoData() {
-    const days = await gymDB.getAllSplitDays();
-    const chestDay = days.find(d => d.id === 'chest_shoulders') || days[0];
-    const backDay = days.find(d => d.id === 'back_biceps') || days[1];
-    const legsDay = days.find(d => d.id === 'legs_abs') || days[2];
-    const armsDay = days.find(d => d.id === 'arms_core') || days[3];
+// Language Switcher Handler
+window.changeAppLanguage = async (langCode) => {
+    if (I18N.currentLang === langCode) return;
+    I18N.setLanguage(langCode);
 
-    const demoMachines = [
-        {
-            name: 'לחיצת חזה במכונה (Chest Press)',
-            days: [chestDay.id],
-            defaultWeight: 50,
-            defaultSets: 3,
-            defaultReps: 10,
-            seatSetting: 'מושב בגובה 4, ידיות בקו פטמות',
-            notes: 'להצמיד שכמות אחורה, מרפקים ב-45 מעלות, לשלוט בירידה',
-            photoBase64: createMachineIconSvg('#10b981', '#06b6d4'),
-            createdAt: new Date(Date.now() - 30 * 86400000).toISOString()
-        },
-        {
-            name: 'לחיצת כתפיים בישיבה (Shoulder Press)',
-            days: [chestDay.id],
-            defaultWeight: 35,
-            defaultSets: 3,
-            defaultReps: 10,
-            seatSetting: 'משענת ב-80 מעלות, גובה 3',
-            notes: 'דחיפה מעלה בלי לנעול מרפקים, בטן מוחזקת',
-            photoBase64: createMachineIconSvg('#38bdf8', '#06b6d4'),
-            createdAt: new Date(Date.now() - 28 * 86400000).toISOString()
-        },
-        {
-            name: 'פרפר במכונה (Pec Deck Flyes)',
-            days: [chestDay.id],
-            defaultWeight: 45,
-            defaultSets: 3,
-            defaultReps: 12,
-            seatSetting: 'מושב גובה 5, מרפקים מעט כפופים',
-            notes: 'כיווץ מודגש לשנייה במרכז, פתיחה איטית ומבוקרת',
-            photoBase64: createMachineIconSvg('#06b6d4', '#10b981'),
-            createdAt: new Date(Date.now() - 26 * 86400000).toISOString()
-        },
-        {
-            name: 'פולי עליון באחיזה רחבה (Lat Pulldown)',
-            days: [backDay ? backDay.id : chestDay.id],
-            defaultWeight: 55,
-            defaultSets: 4,
-            defaultReps: 12,
-            seatSetting: 'כריות ירך צמודות, מוט רחב',
-            notes: 'משיכה לכיוון החזה העליון, כיווץ שכמות בסוף המשיכה',
-            photoBase64: createMachineIconSvg('#06b6d4', '#3b82f6'),
-            createdAt: new Date(Date.now() - 25 * 86400000).toISOString()
-        },
-        {
-            name: 'לחיצת רגליים 45 מעלות (Leg Press)',
-            days: [legsDay ? legsDay.id : chestDay.id],
-            defaultWeight: 140,
-            defaultSets: 4,
-            defaultReps: 10,
-            seatSetting: 'משענת במצב אמצעי, פין בטיחות חור 3',
-            notes: 'כפות רגליים ברוחב כתפיים, לא לנעול ברכיים בסיום דחיפה',
-            photoBase64: createMachineIconSvg('#f59e0b', '#ef4444'),
-            createdAt: new Date(Date.now() - 20 * 86400000).toISOString()
-        },
-        {
-            name: 'כפיפת מרפקים בפריצ\'ר (Preacher Curl)',
-            days: [armsDay ? armsDay.id : chestDay.id, chestDay.id],
-            defaultWeight: 30,
-            defaultSets: 3,
-            defaultReps: 12,
-            seatSetting: 'מושב גובה 3, בית שחי צמוד לכרית',
-            notes: 'בידוד מלא של יד קדמית, לא להתרומם מהכרית',
-            photoBase64: createMachineIconSvg('#ec4899', '#8b5cf6'),
-            createdAt: new Date(Date.now() - 15 * 86400000).toISOString()
+    updateActiveDayLabel();
+    renderDaysPills();
+    renderMachinesGrid();
+    populateTrendMachineDropdown();
+    if (state.currentMachineIdForTrend) {
+        await renderTrendView(state.currentMachineIdForTrend);
+    }
+    renderSplitDaysManageLists();
+
+    Popup.toast(I18N.t('lang_switched'), 'success');
+};
+
+// Initial demo data for rich exploration experience
+async function seedDemoData() {
+    let days = await gymDB.getAllSplitDays();
+    if (days.length === 0) {
+        // Seed default days for current language
+        const tpls = I18N.getTemplates();
+        const primaryTpl = tpls[0];
+        let order = 1;
+        for (const d of primaryTpl.days) {
+            await gymDB.saveSplitDay({
+                id: 'day_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5),
+                name: d.name,
+                schedule: d.schedule || '',
+                icon: d.icon || 'fa-dumbbell',
+                color: d.color || '#10b981',
+                order: order++
+            });
         }
+        days = await gymDB.getAllSplitDays();
+    }
+
+    const demoSpecs = I18N.getDemoMachines();
+    const colors = [
+        ['#10b981', '#06b6d4'],
+        ['#38bdf8', '#06b6d4'],
+        ['#06b6d4', '#10b981'],
+        ['#06b6d4', '#3b82f6'],
+        ['#f59e0b', '#ef4444'],
+        ['#f43f5e', '#ec4899']
     ];
 
-    for (const m of demoMachines) {
-        const saved = await gymDB.saveMachine(m);
+    for (let i = 0; i < demoSpecs.length; i++) {
+        const item = demoSpecs[i];
+        const assignedDay = days[item.dayIdx % days.length];
+        const colorPair = colors[i % colors.length];
+
+        const saved = await gymDB.saveMachine({
+            name: item.name,
+            days: assignedDay ? [assignedDay.id] : [],
+            defaultWeight: item.weight,
+            defaultSets: item.sets,
+            defaultReps: item.reps,
+            seatSetting: item.seat,
+            notes: item.notes,
+            photoBase64: createMachineIconSvg(colorPair[0], colorPair[1]),
+            createdAt: new Date(Date.now() - (30 - i * 3) * 86400000).toISOString()
+        });
 
         // Add history logs to demo machines to showcase Trend right away
         const now = Date.now();
-        const baseW = m.defaultWeight - 10;
+        const baseW = Math.max(5, item.weight - 10);
+        const note1 = I18N.currentLang === 'en' ? 'First session' : (I18N.currentLang === 'ar' ? 'التمرين الأول' : (I18N.currentLang === 'ru' ? 'Первая тренировка' : 'אימון ראשון למכשיר'));
+        const note2 = I18N.currentLang === 'en' ? 'Felt good, slight increase' : (I18N.currentLang === 'ar' ? 'أداء ممتاز، زيادة طفيفة' : (I18N.currentLang === 'ru' ? 'Хорошо пошло, небольшой вес +' : 'הרגיש טוב, עלייה קלה'));
+        const note3 = I18N.currentLang === 'en' ? 'Steady progress' : (I18N.currentLang === 'ar' ? 'تقدم ثابت' : (I18N.currentLang === 'ru' ? 'Стабильный прогресс' : 'התקדמות יציבה'));
+        const note4 = I18N.currentLang === 'en' ? 'New Personal Record!' : (I18N.currentLang === 'ar' ? 'رقم قياسي جديد!' : (I18N.currentLang === 'ru' ? 'Новый личный рекорд!' : 'שיא אישי חדש!'));
+
         await gymDB.addLog({
             machineId: saved.id,
             date: new Date(now - 21 * 86400000).toISOString(),
             weight: baseW,
-            sets: 3,
-            reps: 10,
-            notes: 'אימון ראשון למכשיר'
+            sets: item.sets,
+            reps: item.reps,
+            notes: note1
         });
         await gymDB.addLog({
             machineId: saved.id,
             date: new Date(now - 14 * 86400000).toISOString(),
             weight: baseW + 2.5,
-            sets: 3,
-            reps: 10,
-            notes: 'הרגיש טוב, עלייה קלה'
+            sets: item.sets,
+            reps: item.reps,
+            notes: note2
         });
         await gymDB.addLog({
             machineId: saved.id,
             date: new Date(now - 7 * 86400000).toISOString(),
             weight: baseW + 5,
-            sets: 3,
-            reps: 10,
-            notes: 'התקדמות יציבה'
+            sets: item.sets,
+            reps: item.reps,
+            notes: note3
         });
         await gymDB.addLog({
             machineId: saved.id,
             date: new Date(now - 1 * 86400000).toISOString(),
-            weight: m.defaultWeight,
-            sets: m.defaultSets,
-            reps: m.defaultReps,
-            notes: 'שיא אישי חדש!'
+            weight: item.weight,
+            sets: item.sets,
+            reps: item.reps,
+            notes: note4
         });
     }
 }
@@ -440,10 +383,14 @@ function renderDaysPills() {
     const container = document.getElementById('days-pills-container');
     if (!container) return;
 
+    const allPillText = I18N.t('all_pill');
+    const newDayText = I18N.t('new_day_pill');
+    const newDayTitle = I18N.t('modal_add_day_title');
+
     let html = `
         <button class="day-pill ${state.activeDayId === 'all' ? 'active' : ''}" data-day-id="all">
             <i class="fa-solid fa-list-check"></i>
-            <span>הכל</span>
+            <span>${allPillText}</span>
             <span class="badge">${state.machines.length}</span>
         </button>
     `;
@@ -463,9 +410,9 @@ function renderDaysPills() {
 
     // Quick Add Day button at end of scroll
     html += `
-        <button class="day-pill" id="btn-quick-add-day-pill" style="border-style: dashed; border-color: rgba(255, 255, 255, 0.25); color: var(--accent-lime);" title="הוסף יום אימון חדש">
+        <button class="day-pill" id="btn-quick-add-day-pill" style="border-style: dashed; border-color: rgba(255, 255, 255, 0.25); color: var(--accent-lime);" title="${newDayTitle}">
             <i class="fa-solid fa-plus"></i>
-            <span>יום חדש</span>
+            <span>${newDayText}</span>
         </button>
     `;
 
@@ -493,10 +440,10 @@ function updateActiveDayLabel() {
     if (!label) return;
 
     if (state.activeDayId === 'all') {
-        label.textContent = 'כל המכשירים';
+        label.textContent = I18N.t('all_machines_label');
     } else {
         const current = state.splitDays.find(d => d.id === state.activeDayId);
-        label.textContent = current ? current.name : 'סינון';
+        label.textContent = current ? current.name : I18N.t('all_machines_label');
     }
 }
 
@@ -530,6 +477,9 @@ function renderMachinesGrid() {
 
     emptyState.style.display = 'none';
 
+    const unitKg = I18N.t('unit_kg');
+    const detailsHint = I18N.t('btn_open_details');
+
     grid.innerHTML = filtered.map(machine => {
         // Find split day color and primary day info
         let primaryColor = '#10b981';
@@ -548,25 +498,27 @@ function renderMachinesGrid() {
 
         let lastBadge = '';
         if (machine.lastWeight) {
-            lastBadge = `<div class="cube-last-badge"><i class="fa-solid fa-check"></i> ${machine.lastWeight}ק"ג</div>`;
+            lastBadge = `<div class="cube-last-badge"><i class="fa-solid fa-check"></i> ${machine.lastWeight} ${unitKg}</div>`;
         }
 
         return `
-            <div class="machine-cube" onclick="openMachineDetailsModal('${machine.id}')" data-machine-id="${machine.id}">
+            <div class="machine-cube" onclick="openLogWorkoutModal('${machine.id}')" data-machine-id="${machine.id}">
                 <div class="cube-media">
                     <div class="cube-day-strip" style="background: ${primaryColor};"></div>
                     ${mediaContent}
                     ${lastBadge}
-                    <div class="cube-tap-hint" title="לחץ לפתיחת פרטים"><i class="fa-solid fa-expand"></i></div>
                 </div>
 
                 <div class="cube-body">
                     <div class="cube-title" title="${escapeHtml(machine.name)}">${escapeHtml(machine.name)}</div>
                     <div class="cube-specs-row">
-                        <span class="cube-weight-badge">${machine.defaultWeight || 0} ק"ג</span>
+                        <span class="cube-weight-badge">${machine.defaultWeight || 0} ${unitKg}</span>
                         <span class="cube-reps-badge">${machine.defaultSets || 3}×${machine.defaultReps || 10}</span>
                     </div>
                 </div>
+                <button type="button" class="cube-details-btn" title="${detailsHint}" aria-label="${detailsHint}" onclick="event.stopPropagation(); openMachineDetailsModal('${machine.id}')">
+                    <i class="fa-solid fa-circle-info"></i>
+                </button>
             </div>
         `;
     }).join('');
@@ -580,23 +532,33 @@ window.openMachineDetailsModal = (machineId) => {
     const modal = document.getElementById('modal-machine-details');
     if (!modal) return;
 
+    const unitKg = I18N.t('unit_kg');
+    const setsWord = I18N.t('sets');
+    const repsWord = I18N.t('reps');
+
     // Title
     document.getElementById('details-machine-name').innerHTML = `
         <i class="fa-solid fa-dumbbell" style="color: var(--accent-lime);"></i>
         <span>${escapeHtml(machine.name)}</span>
     `;
 
-    // Photo Box
+    // Photo Box (always visible so the + log button sits under it)
     const photoBox = document.getElementById('details-photo-box');
     const imgEl = document.getElementById('details-img');
+    const placeholderEl = document.getElementById('details-img-placeholder');
     const zoomBtn = document.getElementById('details-zoom-btn');
+    photoBox.style.display = 'block';
     if (machine.photoBase64) {
-        photoBox.style.display = 'block';
         imgEl.src = machine.photoBase64;
+        imgEl.style.display = 'block';
+        if (placeholderEl) placeholderEl.style.display = 'none';
         zoomBtn.style.display = 'flex';
         zoomBtn.onclick = () => Popup.imagePreview(machine.photoBase64, machine.name);
     } else {
-        photoBox.style.display = 'none';
+        imgEl.removeAttribute('src');
+        imgEl.style.display = 'none';
+        if (placeholderEl) placeholderEl.style.display = 'flex';
+        zoomBtn.style.display = 'none';
     }
 
     // Split Days Chips
@@ -611,8 +573,8 @@ window.openMachineDetailsModal = (machineId) => {
     }).join('');
 
     // Planned Targets
-    document.getElementById('details-weight-val').innerHTML = `${machine.defaultWeight || 0} <span class="spec-unit">ק"ג</span>`;
-    document.getElementById('details-reps-val').textContent = `${machine.defaultSets || 3} סטים × ${machine.defaultReps || 10} חזרות`;
+    document.getElementById('details-weight-val').innerHTML = `${machine.defaultWeight || 0} <span class="spec-unit">${unitKg}</span>`;
+    document.getElementById('details-reps-val').textContent = `${machine.defaultSets || 3} ${setsWord} × ${machine.defaultReps || 10} ${repsWord}`;
 
     // Last Log Info
     const lastLogBox = document.getElementById('details-last-log-box');
@@ -620,8 +582,8 @@ window.openMachineDetailsModal = (machineId) => {
     const lastLogDate = document.getElementById('details-last-log-date');
     if (machine.lastWeight) {
         lastLogBox.style.display = 'flex';
-        lastLogText.textContent = `${machine.lastWeight} ק"ג × ${machine.lastReps || machine.defaultReps} חזרות (${machine.lastSets || machine.defaultSets || 3} סטים)`;
-        lastLogDate.textContent = machine.lastDate ? new Date(machine.lastDate).toLocaleDateString('he-IL', { day: '2-digit', month: '2-digit', year: 'numeric' }) : '';
+        lastLogText.textContent = `${machine.lastWeight} ${unitKg} × ${formatLogReps(machine)}`;
+        lastLogDate.textContent = machine.lastDate ? I18N.formatDate(machine.lastDate) : '';
     } else {
         lastLogBox.style.display = 'none';
     }
@@ -647,10 +609,12 @@ window.openMachineDetailsModal = (machineId) => {
     }
 
     // Action Buttons inside Modal
-    document.getElementById('btn-details-log-workout').onclick = () => {
+    const openLog = () => {
         closeModal('modal-machine-details');
         openLogWorkoutModal(machine.id);
     };
+    document.getElementById('btn-details-add-log').onclick = openLog;
+    document.getElementById('btn-details-log-workout').onclick = openLog;
 
     document.getElementById('btn-details-trend').onclick = () => {
         closeModal('modal-machine-details');
@@ -675,7 +639,7 @@ window.openMachineDetailsModal = (machineId) => {
 // ==========================================
 function openAddMachineModal() {
     const modal = document.getElementById('modal-machine');
-    document.getElementById('modal-machine-title').innerHTML = '<i class="fa-solid fa-plus-circle"></i> <span>הוספת מכשיר חדש</span>';
+    document.getElementById('modal-machine-title').innerHTML = `<i class="fa-solid fa-plus-circle"></i> <span>${I18N.t('modal_add_machine')}</span>`;
     document.getElementById('form-machine').reset();
     document.getElementById('machine-id').value = '';
 
@@ -701,7 +665,7 @@ window.openEditMachineModal = (machineId) => {
     if (!machine) return;
 
     const modal = document.getElementById('modal-machine');
-    document.getElementById('modal-machine-title').innerHTML = '<i class="fa-solid fa-pencil"></i> <span>עריכת מכשיר</span>';
+    document.getElementById('modal-machine-title').innerHTML = `<i class="fa-solid fa-pencil"></i> <span>${I18N.t('modal_edit_machine')}</span>`;
 
     document.getElementById('machine-id').value = machine.id;
     document.getElementById('machine-name').value = machine.name || '';
@@ -735,9 +699,9 @@ function renderFormDaysSelector(selectedDayIds = []) {
     if (state.splitDays.length === 0) {
         container.innerHTML = `
             <div style="font-size: 0.88rem; color: var(--text-muted); display: flex; align-items: center; gap: 8px; flex-wrap: wrap; padding: 6px 0;">
-                <span>אין עדיין ימי אימון מוגדרים.</span>
+                <span>${I18N.t('no_split_days_yet')}</span>
                 <button type="button" class="btn btn-secondary btn-sm" onclick="openEditSplitDayModal()">
-                    <i class="fa-solid fa-plus"></i> הוסף יום אימון
+                    <i class="fa-solid fa-plus"></i> ${I18N.t('create_first_day_btn')}
                 </button>
             </div>
         `;
@@ -790,7 +754,7 @@ async function handleSaveMachineForm(e) {
 
     const name = document.getElementById('machine-name').value.trim();
     if (!name) {
-        Popup.toast('אנא הזן שם למכשיר', 'warning');
+        Popup.toast(I18N.t('msg_enter_machine_name'), 'warning');
         return;
     }
 
@@ -799,9 +763,9 @@ async function handleSaveMachineForm(e) {
 
     if (selectedDays.length === 0) {
         const ok = await Popup.confirm(
-            'לא נבחרו ימי אימון',
-            'לא בחרת יום אימון עבור מכשיר זה. המכשיר יופיע רק בלשונית "הכל". האם להמשיך?',
-            { confirmText: 'כן, שמור בכל זאת', cancelText: 'חזור ובחר יום' }
+            I18N.t('confirm_no_days_title'),
+            I18N.t('confirm_no_days_msg'),
+            { confirmText: I18N.t('btn_save_anyway'), cancelText: I18N.t('btn_back_to_select') }
         );
         if (!ok) return;
     }
@@ -825,10 +789,10 @@ async function handleSaveMachineForm(e) {
         await gymDB.saveMachine(machineData);
         closeModal('modal-machine');
         await refreshAllData();
-        Popup.toast(`המכשיר "${name}" נשמר בהצלחה!`, 'success');
+        Popup.toast(I18N.t('msg_machine_saved'), 'success');
     } catch (err) {
         console.error('Error saving machine:', err);
-        Popup.alert('שגיאה בשמירה', 'לא ניתן לשמור את המכשיר: ' + err.message, 'danger');
+        Popup.alert('Error', I18N.t('msg_save_error') + ' ' + err.message, 'danger');
     }
 }
 
@@ -837,19 +801,19 @@ window.confirmDeleteMachine = async (machineId) => {
     if (!machine) return;
 
     const confirmed = await Popup.confirm(
-        'מחיקת מכשיר',
-        `האם אתה בטוח שברצונך למחוק את "${machine.name}"? כל היסטוריית האימונים והגרפים של מכשיר זה יימחקו לצמיתות.`,
-        { danger: true, confirmText: 'כן, מחק מכשיר', cancelText: 'ביטול' }
+        I18N.t('confirm_delete_machine_title'),
+        I18N.t('confirm_delete_machine_msg', { name: machine.name }),
+        { danger: true, confirmText: I18N.t('btn_delete_confirm'), cancelText: I18N.t('btn_cancel') }
     );
 
     if (confirmed) {
         try {
             await gymDB.deleteMachine(machineId);
             await refreshAllData();
-            Popup.toast(`המכשיר "${machine.name}" נמחק`, 'info');
+            Popup.toast(I18N.t('msg_machine_deleted'), 'info');
         } catch (err) {
             console.error('Error deleting machine:', err);
-            Popup.alert('שגיאה במחיקה', err.message, 'danger');
+            Popup.alert('Error', err.message, 'danger');
         }
     }
 };
@@ -863,16 +827,20 @@ window.openLogWorkoutModal = (machineId) => {
 
     const modal = document.getElementById('modal-log-workout');
     document.getElementById('log-machine-id').value = machine.id;
-    document.getElementById('log-modal-machine-name').textContent = `רישום אימון: ${machine.name}`;
+    document.getElementById('log-modal-machine-name').textContent = `${I18N.t('modal_log_workout_title')}: ${machine.name}`;
 
     // Default to today's date (local YYYY-MM-DD)
     const today = new Date().toISOString().split('T')[0];
     document.getElementById('log-date').value = today;
 
-    // Use machine's default or last weight & reps
-    document.getElementById('log-weight').value = machine.lastWeight || machine.defaultWeight || 40;
-    document.getElementById('log-reps').value = machine.lastReps || machine.defaultReps || 10;
-    document.getElementById('log-sets').value = machine.lastSets || machine.defaultSets || 3;
+    document.getElementById('log-weight').value = machine.lastWeight || machine.defaultWeight || 50;
+    const defaultRep = machine.lastReps || machine.defaultReps || 8;
+    const lastSets = (machine.lastRepsPerSet && machine.lastRepsPerSet.length === 3)
+        ? machine.lastRepsPerSet
+        : [defaultRep, defaultRep, defaultRep];
+    document.getElementById('log-reps-1').value = lastSets[0];
+    document.getElementById('log-reps-2').value = lastSets[1];
+    document.getElementById('log-reps-3').value = lastSets[2];
     document.getElementById('log-notes').value = '';
     document.getElementById('log-update-target').checked = true;
 
@@ -888,8 +856,9 @@ async function handleSaveLogForm(e) {
 
     const dateVal = document.getElementById('log-date').value;
     const weight = parseFloat(document.getElementById('log-weight').value) || 0;
-    const reps = parseInt(document.getElementById('log-reps').value) || 10;
-    const sets = parseInt(document.getElementById('log-sets').value) || 3;
+    const repsPerSet = [1, 2, 3].map(i => parseInt(document.getElementById(`log-reps-${i}`).value, 10) || 0);
+    const sets = repsPerSet.length;
+    const reps = repsPerSet[repsPerSet.length - 1];
     const notes = document.getElementById('log-notes').value.trim();
     const updateTarget = document.getElementById('log-update-target').checked;
 
@@ -899,11 +868,18 @@ async function handleSaveLogForm(e) {
         weight,
         reps,
         sets,
+        repsPerSet,
         notes
     };
 
     try {
         await gymDB.addLog(logEntry);
+
+        machine.lastWeight = weight;
+        machine.lastReps = reps;
+        machine.lastSets = sets;
+        machine.lastRepsPerSet = repsPerSet;
+        machine.lastDate = logEntry.date;
 
         if (updateTarget) {
             machine.defaultWeight = weight;
@@ -915,7 +891,7 @@ async function handleSaveLogForm(e) {
         closeModal('modal-log-workout');
         await refreshAllData();
 
-        Popup.toast(`כל הכבוד! נרשמו ${weight} ק"ג × ${reps} חזרות ל-${machine.name}`, 'success');
+        Popup.toast(I18N.t('msg_workout_logged', { weight, reps: formatLogReps(logEntry), name: machine.name }), 'success');
 
         // If trend tab is active or selected for this machine, refresh it
         if (state.currentMachineIdForTrend === machineId) {
@@ -923,7 +899,7 @@ async function handleSaveLogForm(e) {
         }
     } catch (err) {
         console.error('Error logging workout:', err);
-        Popup.alert('שגיאה ברישום אימון', err.message, 'danger');
+        Popup.alert('Error', err.message, 'danger');
     }
 }
 
@@ -935,7 +911,7 @@ function populateTrendMachineDropdown() {
     if (!select) return;
 
     if (state.machines.length === 0) {
-        select.innerHTML = '<option value="">אין עדיין מכשירים במערכת</option>';
+        select.innerHTML = `<option value="">${I18N.t('no_machines_in_system')}</option>`;
         return;
     }
 
@@ -974,10 +950,11 @@ async function renderTrendView(machineId) {
     const machine = state.machines.find(m => m.id === machineId);
     if (!machine) return;
 
-    document.getElementById('chart-machine-title').textContent = `מגמת משקלי עבודה: ${machine.name}`;
+    const unitKg = I18N.t('unit_kg');
+    document.getElementById('chart-machine-title').textContent = `${I18N.t('trends_title')}: ${machine.name}`;
 
     const logs = await gymDB.getLogsForMachine(machineId);
-    document.getElementById('chart-total-logs-badge').textContent = `${logs.length} אימונים רשומים`;
+    document.getElementById('chart-total-logs-badge').textContent = `${logs.length} ${I18N.t('chart_badge_workouts')}`;
 
     // Calculate Stats
     const startWeightEl = document.getElementById('stat-start-weight');
@@ -985,9 +962,9 @@ async function renderTrendView(machineId) {
     const progressEl = document.getElementById('stat-total-progress');
 
     if (logs.length === 0) {
-        startWeightEl.textContent = `${machine.defaultWeight || 0} ק"ג`;
+        startWeightEl.textContent = `${machine.defaultWeight || 0} ${unitKg}`;
         prWeightEl.textContent = '-';
-        progressEl.textContent = 'טרם נרשמו ביצועים';
+        progressEl.textContent = I18N.t('no_trend_data');
     } else {
         const firstW = logs[0].weight;
         const weights = logs.map(l => l.weight);
@@ -996,9 +973,9 @@ async function renderTrendView(machineId) {
         const diff = (currentW - firstW);
         const diffSign = diff > 0 ? `+${diff}` : `${diff}`;
 
-        startWeightEl.textContent = `${firstW} ק"ג`;
-        prWeightEl.textContent = `${maxW} ק"ג`;
-        progressEl.textContent = `${diffSign} ק"ג (${diff >= 0 ? '+' : ''}${firstW > 0 ? ((diff / firstW) * 100).toFixed(0) : 0}%)`;
+        startWeightEl.textContent = `${firstW} ${unitKg}`;
+        prWeightEl.textContent = `${maxW} ${unitKg}`;
+        progressEl.textContent = `${diffSign} ${unitKg} (${diff >= 0 ? '+' : ''}${firstW > 0 ? ((diff / firstW) * 100).toFixed(0) : 0}%)`;
     }
 
     // Render Chart.js
@@ -1018,14 +995,17 @@ function renderProgressionChart(machineName, logs) {
         state.chartInstance.destroy();
     }
 
+    const unitKg = I18N.t('unit_kg');
+    const isRtl = I18N.languages[I18N.currentLang]?.dir === 'rtl';
+    const chartFont = I18N.currentLang === 'ar' ? 'Cairo' : 'Rubik';
+
     if (logs.length === 0) {
-        // Draw empty indicator on chart
         state.chartInstance = new Chart(ctx, {
             type: 'line',
             data: {
-                labels: ['אין נתונים עדיין'],
+                labels: [I18N.t('no_data_yet')],
                 datasets: [{
-                    label: 'משקל (ק"ג)',
+                    label: I18N.t('weight_progression_label'),
                     data: [0],
                     borderColor: '#64748b',
                     borderDash: [5, 5],
@@ -1043,11 +1023,7 @@ function renderProgressionChart(machineName, logs) {
         return;
     }
 
-    const labels = logs.map(l => {
-        const d = new Date(l.date);
-        return d.toLocaleDateString('he-IL', { day: '2-digit', month: '2-digit' });
-    });
-
+    const labels = logs.map(l => I18N.formatDate(l.date, { day: '2-digit', month: '2-digit' }));
     const dataPoints = logs.map(l => l.weight);
 
     // Gradient background for line chart
@@ -1060,7 +1036,7 @@ function renderProgressionChart(machineName, logs) {
         data: {
             labels,
             datasets: [{
-                label: 'משקל עבודה (ק"ג)',
+                label: I18N.t('weight_progression_label'),
                 data: dataPoints,
                 borderColor: '#10b981',
                 borderWidth: 3,
@@ -1082,7 +1058,7 @@ function renderProgressionChart(machineName, logs) {
                     display: false
                 },
                 tooltip: {
-                    rtl: true,
+                    rtl: isRtl,
                     backgroundColor: '#182234',
                     titleColor: '#fff',
                     bodyColor: '#10b981',
@@ -1094,9 +1070,9 @@ function renderProgressionChart(machineName, logs) {
                             const index = context.dataIndex;
                             const log = logs[index];
                             return [
-                                `משקל: ${context.parsed.y} ק"ג`,
-                                `סטים וחזרות: ${log.sets} × ${log.reps}`,
-                                log.notes ? `הערה: ${log.notes}` : ''
+                                `${I18N.t('tooltip_weight')} ${context.parsed.y} ${unitKg}`,
+                                `${I18N.t('tooltip_sets_reps')} ${formatLogReps(log)}`,
+                                log.notes ? `${I18N.t('tooltip_note')} ${log.notes}` : ''
                             ].filter(Boolean);
                         }
                     }
@@ -1109,7 +1085,7 @@ function renderProgressionChart(machineName, logs) {
                     },
                     ticks: {
                         color: '#94a3b8',
-                        font: { family: 'Rubik' }
+                        font: { family: chartFont }
                     }
                 },
                 y: {
@@ -1118,8 +1094,8 @@ function renderProgressionChart(machineName, logs) {
                     },
                     ticks: {
                         color: '#94a3b8',
-                        font: { family: 'Rubik' },
-                        callback: (val) => `${val} ק"ג`
+                        font: { family: chartFont },
+                        callback: (val) => `${val} ${unitKg}`
                     }
                 }
             }
@@ -1132,16 +1108,15 @@ function renderTrendLogsList(logs) {
     if (!container) return;
 
     if (logs.length === 0) {
-        container.innerHTML = '<p style="color: var(--text-muted); font-size: 0.9rem;">אין עדיין אימונים שנרשמו למכשיר זה. לחץ על "רשום ביצוע" בכרטיס המכשיר.</p>';
+        container.innerHTML = `<p style="color: var(--text-muted); font-size: 0.9rem;">${I18N.t('no_history_logs')}</p>`;
         return;
     }
 
-    // Sort descending for timeline list
+    const unitKg = I18N.t('unit_kg');
     const sorted = [...logs].reverse();
 
     container.innerHTML = sorted.map(log => {
-        const d = new Date(log.date);
-        const formattedDate = d.toLocaleDateString('he-IL', {
+        const formattedDate = I18N.formatDate(log.date, {
             year: 'numeric',
             month: 'short',
             day: 'numeric'
@@ -1151,12 +1126,12 @@ function renderTrendLogsList(logs) {
             <div class="history-item">
                 <div>
                     <div class="history-metrics">
-                        <span class="history-weight">${log.weight} ק"ג</span>
-                        <span class="history-reps">${log.sets} סטים × ${log.reps} חזרות</span>
+                        <span class="history-weight">${log.weight} ${unitKg}</span>
+                        <span class="history-reps">${formatLogReps(log)}</span>
                     </div>
                     <div class="history-date">${formattedDate} ${log.notes ? `• <em>${escapeHtml(log.notes)}</em>` : ''}</div>
                 </div>
-                <button class="history-del-btn" onclick="confirmDeleteLog('${log.id}')" title="מחק רישום זה">
+                <button class="history-del-btn" onclick="confirmDeleteLog('${log.id}')" title="${I18N.t('confirm_delete_log_title')}">
                     <i class="fa-solid fa-trash-can"></i>
                 </button>
             </div>
@@ -1166,13 +1141,13 @@ function renderTrendLogsList(logs) {
 
 window.confirmDeleteLog = async (logId) => {
     const ok = await Popup.confirm(
-        'מחיקת רישום אימון',
-        'האם ברצונך למחוק רשומת אימון זו מההיסטוריה?',
-        { danger: true, confirmText: 'מחק', cancelText: 'ביטול' }
+        I18N.t('confirm_delete_log_title'),
+        I18N.t('confirm_delete_log_msg'),
+        { danger: true, confirmText: I18N.t('btn_delete_confirm'), cancelText: I18N.t('btn_cancel') }
     );
     if (ok) {
         await gymDB.deleteLog(logId);
-        Popup.toast('רשומת האימון נמחקה', 'info');
+        Popup.toast(I18N.t('msg_log_deleted'), 'info');
         renderTrendView(state.currentMachineIdForTrend);
         refreshAllData();
     }
@@ -1185,11 +1160,17 @@ function renderSplitDaysManageLists() {
     const listSettings = document.getElementById('split-days-manage-list');
     const listModal = document.getElementById('split-days-full-manage-list');
 
+    const machinesBadgeWord = I18N.t('badge_machines_count');
+    const reorderUpTitle = I18N.t('reorder_up');
+    const reorderDownTitle = I18N.t('reorder_down');
+    const editDayTitle = I18N.t('btn_edit_machine');
+    const deleteDayTitle = I18N.t('btn_delete_machine');
+
     const html = state.splitDays.length === 0
         ? `<div class="empty-state" style="padding: 24px 10px; margin: 10px 0;">
-             <p style="color: var(--text-secondary); margin-bottom: 12px;">אין עדיין ימי אימון מוגדרים.</p>
+             <p style="color: var(--text-secondary); margin-bottom: 12px;">${I18N.t('no_split_days_yet')}</p>
              <button class="btn btn-primary btn-sm" onclick="openEditSplitDayModal()">
-                 <i class="fa-solid fa-plus"></i> צור יום אימון ראשון
+                 <i class="fa-solid fa-plus"></i> ${I18N.t('create_first_day_btn')}
              </button>
            </div>`
         : state.splitDays.map((day, index) => {
@@ -1203,10 +1184,10 @@ function renderSplitDaysManageLists() {
                 <div class="split-day-card-item" style="--day-color: ${color};">
                     <div class="split-day-card-left">
                         <div class="reorder-btns">
-                            <button type="button" class="btn-reorder" onclick="moveSplitDay('${day.id}', -1)" ${isFirst ? 'disabled' : ''} title="העבר למעלה">
+                            <button type="button" class="btn-reorder" onclick="moveSplitDay('${day.id}', -1)" ${isFirst ? 'disabled' : ''} title="${reorderUpTitle}">
                                 <i class="fa-solid fa-chevron-up"></i>
                             </button>
-                            <button type="button" class="btn-reorder" onclick="moveSplitDay('${day.id}', 1)" ${isLast ? 'disabled' : ''} title="העבר למטה">
+                            <button type="button" class="btn-reorder" onclick="moveSplitDay('${day.id}', 1)" ${isLast ? 'disabled' : ''} title="${reorderDownTitle}">
                                 <i class="fa-solid fa-chevron-down"></i>
                             </button>
                         </div>
@@ -1219,11 +1200,11 @@ function renderSplitDaysManageLists() {
                         </div>
                     </div>
                     <div class="split-day-actions">
-                        <span class="split-day-badge-count">${count} מכשירים</span>
-                        <button class="btn btn-secondary btn-icon-only btn-sm" onclick="openEditSplitDayModal('${day.id}')" title="ערוך יום אימון">
+                        <span class="split-day-badge-count">${count} ${machinesBadgeWord}</span>
+                        <button class="btn btn-secondary btn-icon-only btn-sm" onclick="openEditSplitDayModal('${day.id}')" title="${editDayTitle}">
                             <i class="fa-solid fa-pencil"></i>
                         </button>
-                        <button class="btn btn-secondary btn-icon-only btn-sm" onclick="confirmDeleteSplitDay('${day.id}')" title="מחק יום אימון" style="color: var(--accent-rose);">
+                        <button class="btn btn-secondary btn-icon-only btn-sm" onclick="confirmDeleteSplitDay('${day.id}')" title="${deleteDayTitle}" style="color: var(--accent-rose);">
                             <i class="fa-solid fa-trash-can"></i>
                         </button>
                     </div>
@@ -1279,14 +1260,14 @@ window.openEditSplitDayModal = (dayId = null) => {
     }
 
     if (currentDay) {
-        titleEl.innerHTML = '<i class="fa-solid fa-pencil"></i> <span>עריכת יום אימון</span>';
+        titleEl.innerHTML = `<i class="fa-solid fa-pencil"></i> <span>${I18N.t('modal_edit_day_title')}</span>`;
         idInput.value = currentDay.id;
         nameInput.value = currentDay.name || '';
         scheduleInput.value = currentDay.schedule || '';
         iconInput.value = currentDay.icon || 'fa-dumbbell';
         colorInput.value = currentDay.color || '#10b981';
     } else {
-        titleEl.innerHTML = '<i class="fa-solid fa-plus-circle"></i> <span>הוספת יום אימון חדש</span>';
+        titleEl.innerHTML = `<i class="fa-solid fa-plus-circle"></i> <span>${I18N.t('modal_add_day_title')}</span>`;
         idInput.value = '';
         nameInput.value = '';
         scheduleInput.value = '';
@@ -1305,7 +1286,7 @@ function renderIconPicker(selectedIcon) {
     if (!container) return;
 
     container.innerHTML = SPLIT_ICONS.map(item => `
-        <button type="button" class="icon-choice-btn ${item.icon === selectedIcon ? 'selected' : ''}" data-icon="${item.icon}" title="${item.label}">
+        <button type="button" class="icon-choice-btn ${item.icon === selectedIcon ? 'selected' : ''}" data-icon="${item.icon}" title="${I18N.getIconLabel(item.icon)}">
             <i class="fa-solid ${item.icon}"></i>
         </button>
     `).join('');
@@ -1351,7 +1332,7 @@ async function handleSaveSplitDayForm(e) {
     const color = document.getElementById('edit-day-color').value || '#10b981';
 
     if (!name) {
-        Popup.toast('אנא הזן שם ליום האימון', 'warning');
+        Popup.toast(I18N.t('label_day_name'), 'warning');
         return;
     }
 
@@ -1380,7 +1361,7 @@ async function handleSaveSplitDayForm(e) {
 
     closeModal('modal-edit-split-day');
     await refreshAllData();
-    Popup.toast(`יום אימון "${name}" נשמר בהצלחה!`, 'success');
+    Popup.toast(I18N.t('msg_day_saved'), 'success');
 }
 
 window.confirmDeleteSplitDay = async (dayId) => {
@@ -1388,12 +1369,16 @@ window.confirmDeleteSplitDay = async (dayId) => {
     if (!day) return;
 
     const affected = state.machines.filter(m => m.days && m.days.includes(dayId));
-    let warnMsg = `האם למחוק את יום האימון "${day.name}"?`;
+    let warnMsg = I18N.t('confirm_delete_day_msg', { name: day.name });
     if (affected.length > 0) {
-        warnMsg += `\nשים לב: ישנם ${affected.length} מכשירים המשוייכים ליום זה. הם יישארו במערכת ללא שיוך ליום זה.`;
+        warnMsg += '\n' + I18N.t('confirm_delete_day_warning', { count: affected.length });
     }
 
-    const ok = await Popup.confirm('מחיקת יום אימון', warnMsg, { danger: true, confirmText: 'מחק יום', cancelText: 'ביטול' });
+    const ok = await Popup.confirm(
+        I18N.t('confirm_delete_day_title'),
+        warnMsg,
+        { danger: true, confirmText: I18N.t('btn_delete_confirm'), cancelText: I18N.t('btn_cancel') }
+    );
     if (ok) {
         await gymDB.deleteSplitDay(dayId);
         // Also remove from machines
@@ -1405,7 +1390,7 @@ window.confirmDeleteSplitDay = async (dayId) => {
             state.activeDayId = 'all';
         }
         await refreshAllData();
-        Popup.toast(`יום האימון "${day.name}" נמחק`, 'info');
+        Popup.toast(I18N.t('msg_day_deleted'), 'info');
     }
 };
 
@@ -1420,18 +1405,21 @@ function renderTemplatesCards() {
     const container = document.getElementById('templates-cards-container');
     if (!container) return;
 
-    container.innerHTML = PRESET_TEMPLATES.map(tpl => `
+    const templates = I18N.getTemplates();
+    const applyText = I18N.t('btn_apply_template');
+
+    container.innerHTML = templates.map(tpl => `
         <div class="template-card" onclick="applyPresetTemplate('${tpl.id}')">
             <div class="template-card-header">
-                <span class="template-title">${tpl.title}</span>
-                <span class="btn btn-cyan btn-sm"><i class="fa-solid fa-plus"></i> החל תבנית</span>
+                <span class="template-title">${escapeHtml(tpl.title)}</span>
+                <span class="btn btn-cyan btn-sm"><i class="fa-solid fa-plus"></i> ${applyText}</span>
             </div>
-            <p class="template-desc">${tpl.description}</p>
+            <p class="template-desc">${escapeHtml(tpl.description)}</p>
             <div class="template-days-pills">
                 ${tpl.days.map(d => `
                     <span class="template-day-tag" style="border-color: ${d.color}60;">
                         <i class="fa-solid ${d.icon}" style="color: ${d.color};"></i>
-                        <span>${d.name}</span>
+                        <span>${escapeHtml(d.name)}</span>
                     </span>
                 `).join('')}
             </div>
@@ -1440,15 +1428,16 @@ function renderTemplatesCards() {
 }
 
 window.applyPresetTemplate = async (templateId) => {
-    const tpl = PRESET_TEMPLATES.find(t => t.id === templateId);
+    const templates = I18N.getTemplates();
+    const tpl = templates.find(t => t.id === templateId);
     if (!tpl) return;
 
     let replaceExisting = false;
     if (state.splitDays.length > 0) {
         const choice = await Popup.confirm(
-            `החלת תבנית: ${tpl.title}`,
-            `האם ברצונך להחליף את כל ${state.splitDays.length} הימים הקיימים בימי התבנית, או להוסיף את ימי התבנית לימים הקיימים?`,
-            { confirmText: 'החלף הכל בימי התבנית', cancelText: 'הוסף לימים הקיימים' }
+            I18N.t('confirm_apply_template_title', { title: tpl.title }),
+            I18N.t('confirm_apply_template_msg', { count: state.splitDays.length }),
+            { confirmText: I18N.t('btn_replace_all_days'), cancelText: I18N.t('btn_add_to_existing_days') }
         );
         replaceExisting = choice;
     }
@@ -1473,7 +1462,7 @@ window.applyPresetTemplate = async (templateId) => {
 
     closeModal('modal-split-templates');
     await refreshAllData();
-    Popup.toast(`תבנית "${tpl.title}" הוחלה בהצלחה!`, 'success');
+    Popup.toast(I18N.t('msg_template_applied'), 'success');
 };
 
 // ==========================================
@@ -1496,10 +1485,10 @@ async function handleExportBackup() {
         document.body.removeChild(a);
         URL.revokeObjectURL(url);
 
-        Popup.toast('קובץ הגיבוי הורד בהצלחה! כל המכשירים, התמונות וההיסטוריה שמורים.', 'success', 4000);
+        Popup.toast(I18N.t('msg_export_success'), 'success', 4000);
     } catch (err) {
         console.error('Export error:', err);
-        Popup.alert('שגיאה בייצוא', 'אירעה שגיאה בעת הפקת קובץ הגיבוי: ' + err.message, 'danger');
+        Popup.alert('Error', err.message, 'danger');
     }
 }
 
@@ -1514,33 +1503,40 @@ async function handleFileImport(e) {
                 const parsed = JSON.parse(evt.target.result);
 
                 if (!parsed || !parsed.data) {
-                    throw new Error('מבנה קובץ ה-JSON אינו תקין עבור GymMaster.');
+                    throw new Error('Invalid JSON format for GymMaster backup.');
                 }
 
                 const confirmed = await Popup.confirm(
-                    'שחזור מגיבוי',
-                    `נמצאו בקובץ:\n• ${parsed.data.machines?.length || 0} מכשירים\n• ${parsed.data.logs?.length || 0} אימונים בהיסטוריה\n• ${parsed.data.splitDays?.length || 0} ימי אימון.\n\nהאם להחליף את כל הנתונים הקיימים בנתוני הגיבוי?`,
-                    { confirmText: 'שחזר נתונים', cancelText: 'ביטול', danger: false }
+                    I18N.t('msg_import_confirm_title'),
+                    I18N.t('msg_import_confirm_desc', {
+                        machines: parsed.data.machines?.length || 0,
+                        logs: parsed.data.logs?.length || 0,
+                        days: parsed.data.splitDays?.length || 0
+                    }),
+                    { confirmText: I18N.t('btn_restore'), cancelText: I18N.t('btn_cancel'), danger: false }
                 );
 
                 if (confirmed) {
                     const result = await gymDB.importData(parsed, true);
                     await refreshAllData();
                     Popup.alert(
-                        'השחזור הושלם בהצלחה!',
-                        `שוחזרו בהצלחה ${result.machinesCount} מכשירים ו-${result.logsCount} רשומות אימון.`,
+                        I18N.t('msg_import_success_title'),
+                        I18N.t('msg_import_success_desc', {
+                            machines: result.machinesCount,
+                            logs: result.logsCount
+                        }),
                         'success'
                     );
                 }
             } catch (innerErr) {
                 console.error('Import parse error:', innerErr);
-                Popup.alert('קובץ שגוי', 'לא ניתן לקרוא את קובץ הגיבוי: ' + innerErr.message, 'danger');
+                Popup.alert('Error', innerErr.message, 'danger');
             }
         };
         reader.readAsText(file);
     } catch (err) {
         console.error('Import file error:', err);
-        Popup.alert('שגיאה', err.message, 'danger');
+        Popup.alert('Error', err.message, 'danger');
     } finally {
         e.target.value = ''; // Reset file input
     }
@@ -1548,15 +1544,15 @@ async function handleFileImport(e) {
 
 async function handleClearAllData() {
     const confirmed = await Popup.confirm(
-        'איפוס ומחיקת כל הנתונים',
-        'אזהרה: פעולה זו תמחק את כל המכשירים, התמונות והיסטוריית האימונים לצמיתות! מומלץ לוודא שביצעת ייצוא גיבוי קודם. האם להמשיך?',
-        { danger: true, confirmText: 'כן, מחק הכל', cancelText: 'ביטול' }
+        I18N.t('confirm_reset_all_title'),
+        I18N.t('confirm_reset_all_desc'),
+        { danger: true, confirmText: I18N.t('btn_delete_confirm'), cancelText: I18N.t('btn_cancel') }
     );
 
     if (confirmed) {
         await gymDB.clearAllData();
         await refreshAllData();
-        Popup.toast('כל הנתונים אופסו בהצלחה', 'info');
+        Popup.toast(I18N.t('msg_all_reset'), 'info');
     }
 }
 
@@ -1638,10 +1634,42 @@ function setupLightbox() {
 }
 
 function setupEventListeners() {
+    // Language Dropdown Switcher
+    const langToggleBtn = document.getElementById('btn-lang-toggle');
+    const langDropdownMenu = document.getElementById('lang-dropdown-menu');
+
+    langToggleBtn?.addEventListener('click', (e) => {
+        e.stopPropagation();
+        langDropdownMenu?.classList.toggle('show');
+    });
+
+    document.addEventListener('click', (e) => {
+        if (!e.target.closest('.lang-dropdown-container')) {
+            langDropdownMenu?.classList.remove('show');
+        }
+    });
+
+    // Language Dropdown Options
+    document.querySelectorAll('.lang-option-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const lang = btn.dataset.lang;
+            changeAppLanguage(lang);
+            langDropdownMenu?.classList.remove('show');
+        });
+    });
+
+    // Settings Language Choice Cards
+    document.querySelectorAll('.lang-choice-card').forEach(card => {
+        card.addEventListener('click', () => {
+            const lang = card.dataset.lang;
+            changeAppLanguage(lang);
+        });
+    });
+
     // Add machine buttons
     document.getElementById('btn-header-add-machine')?.addEventListener('click', openAddMachineModal);
-    document.getElementById('fab-add-machine')?.addEventListener('click', openAddMachineModal);
     document.getElementById('btn-empty-add-machine')?.addEventListener('click', openAddMachineModal);
+    setupWheelSteppers();
 
     // Forms
     document.getElementById('form-machine')?.addEventListener('submit', handleSaveMachineForm);
@@ -1680,7 +1708,7 @@ function setupEventListeners() {
     const onFileSelected = async (file) => {
         if (!file) return;
         try {
-            Popup.toast('מעבד ודוחס תמונה...', 'info', 1500);
+            Popup.toast(I18N.t('msg_compressing_image'), 'info', 1500);
             const compressedBase64 = await compressImage(file, 900, 0.82);
 
             document.getElementById('photo-preview-wrap').style.display = 'block';
@@ -1688,10 +1716,10 @@ function setupEventListeners() {
             document.getElementById('photo-preview-img').src = compressedBase64;
             document.getElementById('machine-photo-base64').value = compressedBase64;
 
-            Popup.toast('התמונה נוספה בהצלחה!', 'success');
+            Popup.toast(I18N.t('msg_image_added'), 'success');
         } catch (err) {
             console.error('Image compression error:', err);
-            Popup.alert('שגיאה בתמונה', 'לא ניתן לטעון את התמונה: ' + err.message, 'danger');
+            Popup.alert('Error', err.message, 'danger');
         }
     };
 
@@ -1722,14 +1750,14 @@ function setupEventListeners() {
     document.getElementById('btn-clear-all-data')?.addEventListener('click', handleClearAllData);
     document.getElementById('btn-load-demo-data')?.addEventListener('click', async () => {
         const ok = await Popup.confirm(
-            'טעינת נתוני דוגמה',
-            'האם ברצונך לטעון נתוני דוגמה של מכשירים ואימונים?',
-            { confirmText: 'טען נתוני דוגמה', cancelText: 'ביטול' }
+            I18N.t('confirm_load_demo_title'),
+            I18N.t('confirm_load_demo_desc'),
+            { confirmText: I18N.t('btn_load_demo_confirm'), cancelText: I18N.t('btn_cancel') }
         );
         if (ok) {
             await seedDemoData();
             await refreshAllData();
-            Popup.toast('נתוני דוגמה נטענו בהצלחה', 'success');
+            Popup.toast(I18N.t('msg_demo_loaded'), 'success');
         }
     });
 }
@@ -1737,6 +1765,93 @@ function setupEventListeners() {
 function closeModal(modalId) {
     const modal = document.getElementById(modalId);
     if (modal) modal.classList.remove('active');
+}
+
+function formatLogReps(entry) {
+    const perSet = entry?.repsPerSet || entry?.lastRepsPerSet;
+    if (Array.isArray(perSet) && perSet.length) {
+        return perSet.join(' / ');
+    }
+    const sets = entry?.sets || entry?.lastSets;
+    const reps = entry?.reps || entry?.lastReps || entry?.defaultReps;
+    if (sets && reps != null) return `${sets} × ${reps}`;
+    return reps != null ? String(reps) : '-';
+}
+
+function bumpWheelValue(input, delta, min) {
+    let current = parseFloat(input.value) || 0;
+    let next = current + delta;
+    if (next < min) next = min;
+    if (Math.abs(delta) % 1 !== 0) {
+        next = Math.round(next * 10) / 10;
+    } else {
+        next = Math.round(next);
+    }
+    input.value = next;
+}
+
+function setupWheelSteppers() {
+    document.querySelectorAll('.wheel-stepper').forEach(col => {
+        if (col.dataset.bound === '1') return;
+        col.dataset.bound = '1';
+
+        const input = col.querySelector('.wheel-value');
+        const step = parseFloat(col.dataset.step) || 1;
+        const min = parseFloat(col.dataset.min) || 0;
+
+        col.querySelector('.wheel-plus')?.addEventListener('click', (e) => {
+            e.preventDefault();
+            bumpWheelValue(input, step, min);
+        });
+        col.querySelector('.wheel-minus')?.addEventListener('click', (e) => {
+            e.preventDefault();
+            bumpWheelValue(input, -step, min);
+        });
+
+        let startY = null;
+        let acc = 0;
+        col.addEventListener('pointerdown', (e) => {
+            if (e.target.closest('button')) return;
+            startY = e.clientY;
+            acc = 0;
+            col.setPointerCapture(e.pointerId);
+            col.classList.add('swiping');
+        });
+        col.addEventListener('pointermove', (e) => {
+            if (startY === null) return;
+            const dy = startY - e.clientY;
+            acc += dy;
+            startY = e.clientY;
+            const threshold = 20;
+            while (acc >= threshold) {
+                bumpWheelValue(input, step, min);
+                acc -= threshold;
+            }
+            while (acc <= -threshold) {
+                bumpWheelValue(input, -step, min);
+                acc += threshold;
+            }
+        });
+        const endSwipe = () => {
+            startY = null;
+            acc = 0;
+            col.classList.remove('swiping');
+        };
+        col.addEventListener('pointerup', endSwipe);
+        col.addEventListener('pointercancel', endSwipe);
+
+        col.addEventListener('wheel', (e) => {
+            e.preventDefault();
+            bumpWheelValue(input, e.deltaY < 0 ? step : -step, min);
+        }, { passive: false });
+    });
+}
+
+function registerServiceWorker() {
+    if (!('serviceWorker' in navigator)) return;
+    navigator.serviceWorker.register('./sw.js').catch((err) => {
+        console.warn('Service worker registration failed:', err);
+    });
 }
 
 // Security helper
@@ -1747,5 +1862,5 @@ function escapeHtml(str) {
     return div.innerHTML;
 }
 
-// Start app when DOM is ready
+// Boot up app on DOM ready
 document.addEventListener('DOMContentLoaded', initApp);

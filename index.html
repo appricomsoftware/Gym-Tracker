@@ -5,12 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="theme-color" content="#0a0e17">
     <meta name="description" content="ניהול מכשירי כושר, תוכניות אימון, תמונות זיהוי ומעקב מגמות ומשקלים">
-    <title>GymMaster | ניהול מכשירי כושר ומעקב התקדמות</title>
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="GymMaster">
+    <link rel="manifest" href="manifest.webmanifest">
+    <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+    <link rel="apple-touch-icon" href="icons/icon-192.png">
+    <title>GymMaster | Workout & Equipment Tracker</title>
 
-    <!-- Google Fonts: Rubik -->
+    <!-- Google Fonts: Cairo (Arabic) & Rubik (Hebrew, Latin, Cyrillic) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&family=Rubik:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
     <!-- FontAwesome 6 Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
@@ -30,14 +37,41 @@
                 <i class="fa-solid fa-dumbbell"></i>
             </div>
             <div class="logo-text">
-                <h1>GymMaster</h1>
-                <span>ניהול מכשירים ומעקב אימונים</span>
+                <h1 data-i18n="app_title">GymMaster</h1>
+                <span data-i18n="app_subtitle">ניהול מכשירים ומעקב אימונים</span>
             </div>
         </div>
         <div class="header-actions">
+            <!-- Language Dropdown Switcher -->
+            <div class="lang-dropdown-container">
+                <button type="button" class="btn btn-secondary btn-sm lang-toggle-btn" id="btn-lang-toggle" title="Change Language / החלף שפה / تغيير اللغة / Сменить язык" aria-label="Change Language">
+                    <span id="current-lang-flag">🇮🇱</span>
+                    <span id="current-lang-code">עב</span>
+                    <i class="fa-solid fa-chevron-down" style="font-size: 0.65rem; opacity: 0.7;"></i>
+                </button>
+                <div class="lang-dropdown-menu" id="lang-dropdown-menu">
+                    <button type="button" class="lang-option-btn active" data-lang="he">
+                        <span class="flag-icon">🇮🇱</span>
+                        <span class="lang-name">עברית (Hebrew)</span>
+                    </button>
+                    <button type="button" class="lang-option-btn" data-lang="en">
+                        <span class="flag-icon">🇺🇸</span>
+                        <span class="lang-name">English</span>
+                    </button>
+                    <button type="button" class="lang-option-btn" data-lang="ar">
+                        <span class="flag-icon">🇦🇪</span>
+                        <span class="lang-name">العربية (Arabic)</span>
+                    </button>
+                    <button type="button" class="lang-option-btn" data-lang="ru">
+                        <span class="flag-icon">🇷🇺</span>
+                        <span class="lang-name">Русский (Russian)</span>
+                    </button>
+                </div>
+            </div>
+
             <button class="btn btn-primary btn-sm" id="btn-header-add-machine">
                 <i class="fa-solid fa-plus"></i>
-                <span>מכשיר חדש</span>
+                <span data-i18n="new_machine">מכשיר חדש</span>
             </button>
         </div>
     </header>
@@ -52,13 +86,13 @@
                 <div class="section-title-wrap">
                     <h2 class="section-title">
                         <i class="fa-solid fa-calendar-days"></i>
-                        <span>בחירת יום / פיצול אימון</span>
+                        <span data-i18n="split_day_section_title">בחירת יום / פיצול אימון</span>
                     </h2>
                     <div style="display: flex; align-items: center; gap: 8px;">
-                        <span id="active-day-label" class="day-chip">הכל</span>
-                        <button class="btn btn-secondary btn-sm" id="btn-open-days-manager" title="נהל את סוגי ימי האימון">
+                        <span id="active-day-label" class="day-chip" data-i18n="all_machines_label">כל המכשירים</span>
+                        <button class="btn btn-secondary btn-sm" id="btn-open-days-manager" data-i18n-title="manage_split_days" title="נהל את סוגי ימי האימון">
                             <i class="fa-solid fa-sliders"></i>
-                            <span>נהל ימי אימון</span>
+                            <span data-i18n="manage_split_days">נהל ימי אימון</span>
                         </button>
                     </div>
                 </div>
@@ -71,7 +105,7 @@
             <div class="filter-search-bar">
                 <div class="search-input-wrap">
                     <i class="fa-solid fa-magnifying-glass"></i>
-                    <input type="text" id="machine-search-input" class="search-input" placeholder="חיפוש מכשיר או תרגיל לפי שם...">
+                    <input type="text" id="machine-search-input" class="search-input" data-i18n-ph="search_placeholder" placeholder="חיפוש מכשיר או תרגיל לפי שם...">
                 </div>
             </div>
 
@@ -85,11 +119,11 @@
                 <div class="empty-icon">
                     <i class="fa-solid fa-dumbbell"></i>
                 </div>
-                <h3>אין עדיין מכשירים ליום זה</h3>
-                <p>הוסף את המכשיר הראשון שלך עם תמונה, ימי אימון, משקל יעד וחזרות.</p>
+                <h3 data-i18n="empty_title">אין עדיין מכשירים ליום זה</h3>
+                <p data-i18n="empty_desc">הוסף את המכשיר הראשון שלך עם תמונה, ימי אימון, משקל יעד וחזרות.</p>
                 <button class="btn btn-primary" id="btn-empty-add-machine">
                     <i class="fa-solid fa-camera"></i>
-                    <span>צלם והוסף מכשיר ראשון</span>
+                    <span data-i18n="empty_add_btn">צלם והוסף מכשיר ראשון</span>
                 </button>
             </div>
         </section>
@@ -99,27 +133,27 @@
             <div class="section-title-wrap">
                 <h2 class="section-title">
                     <i class="fa-solid fa-chart-line"></i>
-                    <span>מעקב מגמות והתקדמות</span>
+                    <span data-i18n="trends_title">מעקב מגמות והתקדמות</span>
                 </h2>
             </div>
 
             <div class="trend-header-card">
-                <label class="form-label" for="trend-machine-select">בחר מכשיר לצפייה במגמה:</label>
+                <label class="form-label" for="trend-machine-select" data-i18n="label_select_trend_machine">בחר מכשיר לצפייה במגמה:</label>
                 <select id="trend-machine-select" class="form-select">
                     <!-- Populated by JS -->
                 </select>
 
                 <div class="trend-stats-row" id="trend-stats-container">
                     <div class="stat-box">
-                        <div class="stat-label">משקל התחלתי</div>
+                        <div class="stat-label" data-i18n="stat_start_weight">משקל התחלתי</div>
                         <div class="stat-num" id="stat-start-weight">-</div>
                     </div>
                     <div class="stat-box">
-                        <div class="stat-label">שיא אישי (PR)</div>
+                        <div class="stat-label" data-i18n="stat_pr">שיא אישי (PR)</div>
                         <div class="stat-num cyan" id="stat-pr-weight">-</div>
                     </div>
                     <div class="stat-box">
-                        <div class="stat-label">התקדמות כוללת</div>
+                        <div class="stat-label" data-i18n="stat_total_progress">התקדמות כוללת</div>
                         <div class="stat-num purple" id="stat-total-progress">-</div>
                     </div>
                 </div>
@@ -128,7 +162,7 @@
             <!-- Chart Box -->
             <div class="chart-card">
                 <div class="chart-header">
-                    <h3 class="chart-title" id="chart-machine-title">גרף משקלי עבודה לאורך זמן</h3>
+                    <h3 class="chart-title" id="chart-machine-title" data-i18n="chart_title">גרף משקלי עבודה לאורך זמן</h3>
                     <span class="day-chip" id="chart-total-logs-badge">0 אימונים</span>
                 </div>
                 <div class="chart-canvas-container">
@@ -140,7 +174,7 @@
             <div class="settings-card">
                 <h3>
                     <i class="fa-solid fa-clock-rotate-left"></i>
-                    <span>היסטוריית אימונים שנרשמו למכשיר זה</span>
+                    <span data-i18n="history_title">היסטוריית אימונים שנרשמו למכשיר זה</span>
                 </h3>
                 <div id="trend-logs-list" class="history-logs-list">
                     <!-- Logs list injected by JS -->
@@ -153,27 +187,70 @@
             <div class="section-title-wrap">
                 <h2 class="section-title">
                     <i class="fa-solid fa-gear"></i>
-                    <span>גיבוי, שחזור והגדרות</span>
+                    <span data-i18n="settings_title">גיבוי, שחזור והגדרות</span>
                 </h2>
             </div>
 
             <div class="settings-section">
+                <!-- Language Selection Card -->
+                <div class="settings-card">
+                    <h3>
+                        <i class="fa-solid fa-globe" style="color: var(--accent-cyan);"></i>
+                        <span data-i18n="lang_card_title">שפת הממשק / Interface Language</span>
+                    </h3>
+                    <p data-i18n="lang_card_desc">בחר את שפת האפליקציה המועדפת עליך (תומך בעברית, אנגלית, ערבית ורוסית).</p>
+                    <div class="lang-grid-choices">
+                        <button type="button" class="lang-choice-card active" data-lang="he">
+                            <span class="choice-flag">🇮🇱</span>
+                            <div class="choice-info">
+                                <span class="choice-name">עברית</span>
+                                <span class="choice-sub">RTL • Hebrew</span>
+                            </div>
+                            <i class="fa-solid fa-check choice-check"></i>
+                        </button>
+                        <button type="button" class="lang-choice-card" data-lang="en">
+                            <span class="choice-flag">🇺🇸</span>
+                            <div class="choice-info">
+                                <span class="choice-name">English</span>
+                                <span class="choice-sub">LTR • English</span>
+                            </div>
+                            <i class="fa-solid fa-check choice-check"></i>
+                        </button>
+                        <button type="button" class="lang-choice-card" data-lang="ar">
+                            <span class="choice-flag">🇦🇪</span>
+                            <div class="choice-info">
+                                <span class="choice-name">العربية</span>
+                                <span class="choice-sub">RTL • Arabic</span>
+                            </div>
+                            <i class="fa-solid fa-check choice-check"></i>
+                        </button>
+                        <button type="button" class="lang-choice-card" data-lang="ru">
+                            <span class="choice-flag">🇷🇺</span>
+                            <div class="choice-info">
+                                <span class="choice-name">Русский</span>
+                                <span class="choice-sub">LTR • Russian</span>
+                            </div>
+                            <i class="fa-solid fa-check choice-check"></i>
+                        </button>
+                    </div>
+                </div>
+
                 <!-- Backup & Restore -->
                 <div class="settings-card">
                     <h3>
                         <i class="fa-solid fa-database" style="color: var(--accent-cyan);"></i>
-                        <span>גיבוי ושחזור נתונים מקומי</span>
+                        <span data-i18n="backup_card_title">גיבוי ושחזור נתונים מקומי</span>
                     </h3>
-                    <p>הנתונים והתמונות נשמרים במכשירך בבסיס נתונים מקומי מהיר (IndexedDB). תוכל לייצא קובץ גיבוי מלא או לשחזר ממכשיר אחר.</p>
+                    <p data-i18n="backup_card_desc">הנתונים והתמונות נשמרים במכשירך בבסיס נתונים מקומי מהיר (IndexedDB). תוכל לייצא קובץ גיבוי מלא או לשחזר ממכשיר אחר.</p>
 
                     <div style="display: flex; gap: 10px; flex-wrap: wrap;">
                         <button class="btn btn-cyan" id="btn-export-backup">
                             <i class="fa-solid fa-download"></i>
-                            <span>ייצוא גיבוי מלא (JSON)</span>
+                            <span data-i18n="btn_export_json">ייצוא גיבוי מלא (JSON)</span>
                         </button>
                         <button class="btn btn-secondary" id="btn-trigger-import">
                             <i class="fa-solid fa-upload"></i>
-                            <span>שחזור / ייבוא מקובץ</span>
+                            <span data-i18n="btn_import_json">שחזור / ייבוא מקובץ</span>
                         </button>
                         <input type="file" id="import-file-input" accept=".json" style="display: none;">
                     </div>
@@ -184,20 +261,20 @@
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 8px;">
                         <h3 style="margin-bottom: 0;">
                             <i class="fa-solid fa-layer-group" style="color: var(--accent-lime);"></i>
-                            <span>ניהול סוגי ימי אימון מתוכננים</span>
+                            <span data-i18n="manage_splits_settings_title">ניהול סוגי ימי אימון מתוכננים</span>
                         </h3>
                         <div style="display: flex; gap: 8px;">
                             <button class="btn btn-secondary btn-sm" id="btn-open-templates-from-settings">
                                 <i class="fa-solid fa-wand-magic-sparkles"></i>
-                                <span>תבניות מוכנות</span>
+                                <span data-i18n="btn_ready_templates">תבניות מוכנות</span>
                             </button>
                             <button class="btn btn-primary btn-sm" id="btn-add-split-day">
                                 <i class="fa-solid fa-plus"></i>
-                                <span>הוסף יום</span>
+                                <span data-i18n="btn_add_day_short">הוסף יום</span>
                             </button>
                         </div>
                     </div>
-                    <p>התאם אישית את ימי ופיצולי האימון שלך לפי התוכנית (ערוך שמות, ימי אימון מתוכננים, אייקונים וצבעים, ושנה את הסדר שלהם).</p>
+                    <p data-i18n="manage_splits_settings_desc">התאם אישית את ימי ופיצולי האימון שלך לפי התוכנית (ערוך שמות, ימי אימון מתוכננים, אייקונים וצבעים, ושנה את הסדר שלהם).</p>
                     <div id="split-days-manage-list" class="split-days-manage-list">
                         <!-- Split days injected by JS -->
                     </div>
@@ -207,17 +284,17 @@
                 <div class="settings-card" style="border-color: rgba(244, 63, 94, 0.3);">
                     <h3 style="color: var(--accent-rose);">
                         <i class="fa-solid fa-triangle-exclamation"></i>
-                        <span>איפוס וטעינת נתונים</span>
+                        <span data-i18n="danger_zone_title">איפוס וטעינת נתונים</span>
                     </h3>
-                    <p>מחיקת כל המכשירים, התמונות והיסטוריית האימונים לצורך התחלה נקייה לחלוטין.</p>
+                    <p data-i18n="danger_zone_desc">מחיקת כל המכשירים, התמונות והיסטוריית האימונים לצורך התחלה נקייה לחלוטין.</p>
                     <div style="display: flex; gap: 10px; flex-wrap: wrap;">
                         <button class="btn btn-danger btn-sm" id="btn-clear-all-data">
                             <i class="fa-solid fa-trash-can"></i>
-                            <span>אפס ומחק את כל הנתונים</span>
+                            <span data-i18n="btn_clear_all">אפס ומחק את כל הנתונים</span>
                         </button>
                         <button class="btn btn-secondary btn-sm" id="btn-load-demo-data">
                             <i class="fa-solid fa-wand-magic-sparkles"></i>
-                            <span>טען נתוני דוגמה להתרשמות</span>
+                            <span data-i18n="btn_load_demo">טען נתוני דוגמה להתרשמות</span>
                         </button>
                     </div>
                 </div>
@@ -226,27 +303,22 @@
 
     </main>
 
-    <!-- Floating Action Button -->
-    <button class="fab-btn" id="fab-add-machine" aria-label="הוסף מכשיר">
-        <i class="fa-solid fa-plus"></i>
-    </button>
-
     <!-- Mobile Bottom Navigation Bar -->
     <nav class="bottom-nav">
         <button class="nav-item active" data-target="view-machines">
             <div class="nav-indicator"></div>
             <i class="fa-solid fa-dumbbell"></i>
-            <span>מכשירים</span>
+            <span data-i18n="nav_machines">מכשירים</span>
         </button>
         <button class="nav-item" data-target="view-trends">
             <div class="nav-indicator"></div>
             <i class="fa-solid fa-chart-line"></i>
-            <span>מגמות ו-Trend</span>
+            <span data-i18n="nav_trends">מגמות ו-Trend</span>
         </button>
         <button class="nav-item" data-target="view-settings">
             <div class="nav-indicator"></div>
             <i class="fa-solid fa-sliders"></i>
-            <span>הגדרות וגיבוי</span>
+            <span data-i18n="nav_settings">הגדרות וגיבוי</span>
         </button>
     </nav>
 
@@ -258,7 +330,7 @@
             <div class="modal-header">
                 <h3 class="modal-title" id="details-machine-name">
                     <i class="fa-solid fa-dumbbell"></i>
-                    <span>פרטי מכשיר</span>
+                    <span data-i18n="details_modal_title">פרטי מכשיר</span>
                 </h3>
                 <button class="modal-close-btn" data-close-modal="modal-machine-details">
                     <i class="fa-solid fa-xmark"></i>
@@ -268,20 +340,26 @@
                 <!-- Photo Banner -->
                 <div class="details-photo-box" id="details-photo-box">
                     <img id="details-img" src="" alt="תמונת מכשיר" class="details-img">
+                    <div id="details-img-placeholder" class="details-img-placeholder" style="display: none;">
+                        <i class="fa-solid fa-dumbbell"></i>
+                    </div>
                     <span class="details-zoom-btn" id="details-zoom-btn">
-                        <i class="fa-solid fa-expand"></i> לחץ להגדלה
+                        <i class="fa-solid fa-expand"></i> <span data-i18n="tap_to_enlarge">לחץ להגדלה</span>
                     </span>
                     <div id="details-days-chips" class="details-days-chips"></div>
                 </div>
+                <button type="button" class="details-add-log-btn" id="btn-details-add-log" data-i18n-title="btn_log_workout" title="רשום ביצוע">
+                    <i class="fa-solid fa-plus"></i>
+                </button>
 
                 <!-- Planned Targets Grid -->
                 <div class="details-specs-grid">
                     <div class="details-spec-card">
-                        <span class="spec-label">משקל מתוכנן</span>
-                        <div class="spec-value" id="details-weight-val">0 <span class="spec-unit">ק"ג</span></div>
+                        <span class="spec-label" data-i18n="target_weight">משקל מתוכנן</span>
+                        <div class="spec-value" id="details-weight-val">0 <span class="spec-unit" data-i18n="unit_kg">ק"ג</span></div>
                     </div>
                     <div class="details-spec-card">
-                        <span class="spec-label">סטים וחזרות</span>
+                        <span class="spec-label" data-i18n="target_sets_reps">סטים וחזרות</span>
                         <div class="spec-value cyan" id="details-reps-val">3 × 10</div>
                     </div>
                 </div>
@@ -289,7 +367,7 @@
                 <!-- Last Performance Info -->
                 <div id="details-last-log-box" class="last-log-badge" style="margin-bottom: 12px; display: none;">
                     <div>
-                        <span style="font-size: 0.78rem; color: var(--text-muted); display: block;">אימון אחרון שנרשם:</span>
+                        <span style="font-size: 0.78rem; color: var(--text-muted); display: block;" data-i18n="last_workout_logged">אימון אחרון שנרשם:</span>
                         <strong id="details-last-log-text" style="color: var(--accent-lime); font-size: 0.95rem;"></strong>
                     </div>
                     <span id="details-last-log-date" class="history-date"></span>
@@ -299,7 +377,7 @@
                 <div id="details-seat-box" class="details-info-box" style="display: none;">
                     <i class="fa-solid fa-sliders" style="color: var(--accent-orange);"></i>
                     <div>
-                        <strong style="color: #fff;">כיוונון מושב / פין:</strong>
+                        <strong style="color: #fff;" data-i18n="seat_adjustment_title">כיוונון מושב / פין:</strong>
                         <div id="details-seat-val" style="color: var(--text-secondary); margin-top: 2px;"></div>
                     </div>
                 </div>
@@ -308,7 +386,7 @@
                 <div id="details-notes-box" class="details-info-box" style="display: none;">
                     <i class="fa-solid fa-note-sticky" style="color: var(--accent-cyan);"></i>
                     <div>
-                        <strong style="color: #fff;">דגשים וטכניקה:</strong>
+                        <strong style="color: #fff;" data-i18n="notes_technique_title">דגשים וטכניקה:</strong>
                         <div id="details-notes-val" style="color: var(--text-secondary); margin-top: 2px;"></div>
                     </div>
                 </div>
@@ -317,18 +395,18 @@
                 <div style="display: flex; gap: 8px; flex: 1;">
                     <button type="button" class="btn btn-primary" id="btn-details-log-workout" style="flex: 1;">
                         <i class="fa-solid fa-pen-to-square"></i>
-                        <span>רשום ביצוע</span>
+                        <span data-i18n="btn_log_workout">רשום ביצוע</span>
                     </button>
-                    <button type="button" class="btn btn-secondary" id="btn-details-trend" title="גרף התקדמות">
+                    <button type="button" class="btn btn-secondary" id="btn-details-trend" title="Trend">
                         <i class="fa-solid fa-chart-line"></i>
-                        <span>Trend</span>
+                        <span data-i18n="btn_trend">Trend</span>
                     </button>
                 </div>
                 <div style="display: flex; gap: 6px;">
-                    <button type="button" class="btn btn-secondary btn-icon-only" id="btn-details-edit" title="ערוך מכשיר">
+                    <button type="button" class="btn btn-secondary btn-icon-only" id="btn-details-edit" data-i18n-title="btn_edit_machine" title="ערוך מכשיר">
                         <i class="fa-solid fa-pencil"></i>
                     </button>
-                    <button type="button" class="btn btn-secondary btn-icon-only" id="btn-details-delete" title="מחק מכשיר" style="color: var(--accent-rose);">
+                    <button type="button" class="btn btn-secondary btn-icon-only" id="btn-details-delete" data-i18n-title="btn_delete_machine" title="מחק מכשיר" style="color: var(--accent-rose);">
                         <i class="fa-solid fa-trash-can"></i>
                     </button>
                 </div>
@@ -342,7 +420,7 @@
             <div class="modal-header">
                 <h3 class="modal-title" id="modal-machine-title">
                     <i class="fa-solid fa-dumbbell"></i>
-                    <span>הוספת מכשיר חדש</span>
+                    <span data-i18n="modal_add_machine">הוספת מכשיר חדש</span>
                 </h3>
                 <button class="modal-close-btn" data-close-modal="modal-machine">
                     <i class="fa-solid fa-xmark"></i>
@@ -354,13 +432,13 @@
 
                     <!-- Machine Name -->
                     <div class="form-group">
-                        <label class="form-label" for="machine-name">שם המכשיר או התרגיל *</label>
-                        <input type="text" id="machine-name" class="form-input" placeholder="למשל: לחיצת חזה במכונה, פולי עליון..." required>
+                        <label class="form-label" for="machine-name" data-i18n="label_machine_name">שם המכשיר או התרגיל *</label>
+                        <input type="text" id="machine-name" class="form-input" data-i18n-ph="ph_machine_name" placeholder="למשל: לחיצת חזה במכונה, פולי עליון..." required>
                     </div>
 
                     <!-- Photo Upload / Camera -->
                     <div class="form-group">
-                        <label class="form-label">תמונת המכשיר (לזיהוי ויזואלי מהיר)</label>
+                        <label class="form-label" data-i18n="label_machine_photo">תמונת המכשיר (לזיהוי ויזואלי מהיר)</label>
                         <div class="photo-uploader-box" id="photo-box">
                             <div class="photo-preview-wrap" id="photo-preview-wrap">
                                 <img id="photo-preview-img" src="" alt="תצוגה מקדימה">
@@ -370,17 +448,17 @@
                             </div>
                             <div class="photo-prompt" id="photo-prompt">
                                 <i class="fa-solid fa-camera"></i>
-                                <strong>צלם מכשיר או בחר תמונה</strong>
-                                <span>עוזר לזהות את המכשיר במבט אחד בחדר הכושר</span>
+                                <strong data-i18n="photo_prompt_title">צלם מכשיר או בחר תמונה</strong>
+                                <span data-i18n="photo_prompt_sub">עוזר לזהות את המכשיר במבט אחד בחדר הכושר</span>
                             </div>
                             <div class="photo-inputs-actions">
                                 <button type="button" class="btn btn-cyan btn-sm" id="btn-trigger-camera">
                                     <i class="fa-solid fa-camera"></i>
-                                    <span>צילום ישיר</span>
+                                    <span data-i18n="btn_camera">צילום ישיר</span>
                                 </button>
                                 <button type="button" class="btn btn-secondary btn-sm" id="btn-trigger-gallery">
                                     <i class="fa-solid fa-image"></i>
-                                    <span>מהגלריה</span>
+                                    <span data-i18n="btn_gallery">מהגלריה</span>
                                 </button>
                             </div>
                             <!-- Real inputs -->
@@ -392,7 +470,7 @@
 
                     <!-- Split Days Selector -->
                     <div class="form-group">
-                        <label class="form-label">ימי אימון מתוכננים</label>
+                        <label class="form-label" data-i18n="label_planned_days">ימי אימון מתוכננים</label>
                         <div class="days-selector" id="form-days-selector">
                             <!-- Populated dynamically -->
                         </div>
@@ -401,7 +479,7 @@
                     <!-- Planned Weight & Reps -->
                     <div class="form-row">
                         <div class="form-group">
-                            <label class="form-label">משקל מתוכנן (ק"ג)</label>
+                            <label class="form-label" data-i18n="label_target_weight">משקל מתוכנן (ק"ג)</label>
                             <div class="stepper-wrap">
                                 <button type="button" class="stepper-btn" data-step-target="machine-weight" data-step="-2.5">-</button>
                                 <input type="number" id="machine-weight" class="stepper-input" value="40" step="0.5" min="0">
@@ -409,7 +487,7 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="form-label">חזרות מתוכננות</label>
+                            <label class="form-label" data-i18n="label_target_reps">חזרות מתוכננות</label>
                             <div class="stepper-wrap">
                                 <button type="button" class="stepper-btn" data-step-target="machine-reps" data-step="-1">-</button>
                                 <input type="number" id="machine-reps" class="stepper-input" value="10" step="1" min="1">
@@ -420,7 +498,7 @@
 
                     <div class="form-row">
                         <div class="form-group">
-                            <label class="form-label">כמות סטים</label>
+                            <label class="form-label" data-i18n="label_sets_count">כמות סטים</label>
                             <div class="stepper-wrap">
                                 <button type="button" class="stepper-btn" data-step-target="machine-sets" data-step="-1">-</button>
                                 <input type="number" id="machine-sets" class="stepper-input" value="3" step="1" min="1">
@@ -428,23 +506,23 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="form-label">כיוונון מושב / פין</label>
-                            <input type="text" id="machine-seat" class="form-input" placeholder="למשל: גובה 4, משענת 2">
+                            <label class="form-label" data-i18n="label_seat_pin">כיוונון מושב / פין</label>
+                            <input type="text" id="machine-seat" class="form-input" data-i18n-ph="ph_seat_pin" placeholder="למשל: גובה 4, משענת 2">
                         </div>
                     </div>
 
                     <!-- Notes -->
                     <div class="form-group">
-                        <label class="form-label" for="machine-notes">הערות ודגשי טכניקה</label>
-                        <textarea id="machine-notes" class="form-textarea" placeholder="למשל: אחיזה רחבה, דרופ-סט בסיום, תנועה איטית ומבוקרת..."></textarea>
+                        <label class="form-label" for="machine-notes" data-i18n="label_notes">הערות ודגשי טכניקה</label>
+                        <textarea id="machine-notes" class="form-textarea" data-i18n-ph="ph_notes" placeholder="למשל: אחיזה רחבה, דרופ-סט בסיום, תנועה איטית ומבוקרת..."></textarea>
                     </div>
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-close-modal="modal-machine">ביטול</button>
+                <button type="button" class="btn btn-secondary" data-close-modal="modal-machine" data-i18n="btn_cancel">ביטול</button>
                 <button type="submit" form="form-machine" class="btn btn-primary" id="btn-save-machine">
                     <i class="fa-solid fa-floppy-disk"></i>
-                    <span>שמור מכשיר</span>
+                    <span data-i18n="btn_save_machine">שמור מכשיר</span>
                 </button>
             </div>
         </div>
@@ -456,7 +534,7 @@
             <div class="modal-header">
                 <h3 class="modal-title">
                     <i class="fa-solid fa-pen-to-square"></i>
-                    <span id="log-modal-machine-name">רישום ביצוע אימון</span>
+                    <span id="log-modal-machine-name" data-i18n="modal_log_workout_title">רישום ביצוע אימון</span>
                 </h3>
                 <button class="modal-close-btn" data-close-modal="modal-log-workout">
                     <i class="fa-solid fa-xmark"></i>
@@ -468,57 +546,58 @@
 
                     <!-- Date of workout -->
                     <div class="form-group">
-                        <label class="form-label" for="log-date">תאריך האימון</label>
+                        <label class="form-label" for="log-date" data-i18n="label_log_date">תאריך האימון</label>
                         <input type="date" id="log-date" class="form-input" required>
                     </div>
 
-                    <!-- Weight & Reps done -->
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label class="form-label">משקל שבוצע (ק"ג)</label>
-                            <div class="stepper-wrap">
-                                <button type="button" class="stepper-btn" data-step-target="log-weight" data-step="-2.5">-</button>
-                                <input type="number" id="log-weight" class="stepper-input" step="0.5" min="0" required>
-                                <button type="button" class="stepper-btn" data-step-target="log-weight" data-step="2.5">+</button>
+                    <div class="form-group">
+                        <div class="wheel-stepper-grid">
+                            <div class="wheel-stepper wheel-stepper-weight" data-step="2.5" data-min="0">
+                                <button type="button" class="wheel-plus" aria-label="+">+</button>
+                                <input type="number" id="log-weight" class="wheel-value" value="50" step="2.5" min="0" inputmode="decimal" required>
+                                <button type="button" class="wheel-minus" aria-label="-">−</button>
+                                <span class="wheel-label" data-i18n="unit_kg">ק"ג</span>
+                            </div>
+                            <div class="wheel-stepper" data-step="1" data-min="0">
+                                <button type="button" class="wheel-plus" aria-label="+">+</button>
+                                <input type="number" id="log-reps-1" class="wheel-value" value="8" step="1" min="0" inputmode="numeric" required>
+                                <button type="button" class="wheel-minus" aria-label="-">−</button>
+                                <span class="wheel-label" data-i18n-set="1">סט 1</span>
+                            </div>
+                            <div class="wheel-stepper" data-step="1" data-min="0">
+                                <button type="button" class="wheel-plus" aria-label="+">+</button>
+                                <input type="number" id="log-reps-2" class="wheel-value" value="9" step="1" min="0" inputmode="numeric" required>
+                                <button type="button" class="wheel-minus" aria-label="-">−</button>
+                                <span class="wheel-label" data-i18n-set="2">סט 2</span>
+                            </div>
+                            <div class="wheel-stepper" data-step="1" data-min="0">
+                                <button type="button" class="wheel-plus" aria-label="+">+</button>
+                                <input type="number" id="log-reps-3" class="wheel-value" value="9" step="1" min="0" inputmode="numeric" required>
+                                <button type="button" class="wheel-minus" aria-label="-">−</button>
+                                <span class="wheel-label" data-i18n-set="3">סט 3</span>
                             </div>
                         </div>
-                        <div class="form-group">
-                            <label class="form-label">חזרות שבוצעו</label>
-                            <div class="stepper-wrap">
-                                <button type="button" class="stepper-btn" data-step-target="log-reps" data-step="-1">-</button>
-                                <input type="number" id="log-reps" class="stepper-input" step="1" min="1" required>
-                                <button type="button" class="stepper-btn" data-step-target="log-reps" data-step="1">+</button>
-                            </div>
-                        </div>
+                        <p class="wheel-swipe-hint" data-i18n="swipe_hint">החלק למעלה או למטה כדי לשנות</p>
                     </div>
 
                     <div class="form-group">
-                        <label class="form-label">סטים שבוצעו</label>
-                        <div class="stepper-wrap">
-                            <button type="button" class="stepper-btn" data-step-target="log-sets" data-step="-1">-</button>
-                            <input type="number" id="log-sets" class="stepper-input" step="1" min="1" required>
-                            <button type="button" class="stepper-btn" data-step-target="log-sets" data-step="1">+</button>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label" for="log-notes">הערות לביצוע היום</label>
-                        <input type="text" id="log-notes" class="form-input" placeholder="למשל: הרגיש קל, שבוע הבא להעלות משקל!">
+                        <label class="form-label" for="log-notes" data-i18n="label_log_notes">הערות לביצוע היום</label>
+                        <input type="text" id="log-notes" class="form-input" data-i18n-ph="ph_log_notes" placeholder="למשל: הרגיש קל, שבוע הבא להעלות משקל!">
                     </div>
 
                     <div class="form-group" style="display: flex; align-items: center; gap: 8px; margin-top: 10px;">
                         <input type="checkbox" id="log-update-target" checked style="width: 18px; height: 18px; accent-color: var(--accent-lime); cursor: pointer;">
-                        <label for="log-update-target" style="font-size: 0.88rem; cursor: pointer; color: var(--text-secondary);">
+                        <label for="log-update-target" data-i18n="chk_update_target" style="font-size: 0.88rem; cursor: pointer; color: var(--text-secondary);">
                             עדכן משקל זה כמשקל היעד החדש של המכשיר
                         </label>
                     </div>
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-close-modal="modal-log-workout">ביטול</button>
+                <button type="button" class="btn btn-secondary" data-close-modal="modal-log-workout" data-i18n="btn_cancel">ביטול</button>
                 <button type="submit" form="form-log-workout" class="btn btn-primary">
                     <i class="fa-solid fa-check"></i>
-                    <span>שמור ביצוע</span>
+                    <span data-i18n="btn_save_log">שמור ביצוע</span>
                 </button>
             </div>
         </div>
@@ -530,7 +609,7 @@
             <div class="modal-header">
                 <h3 class="modal-title">
                     <i class="fa-solid fa-layer-group"></i>
-                    <span>ניהול סוגי ימי אימון מתוכננים</span>
+                    <span data-i18n="manage_split_modal_title">ניהול סוגי ימי אימון מתוכננים</span>
                 </h3>
                 <button class="modal-close-btn" data-close-modal="modal-manage-split-days">
                     <i class="fa-solid fa-xmark"></i>
@@ -540,11 +619,11 @@
                 <div class="days-manager-header-actions">
                     <button class="btn btn-primary btn-sm" id="btn-modal-add-day">
                         <i class="fa-solid fa-plus"></i>
-                        <span>יום אימון חדש</span>
+                        <span data-i18n="btn_new_workout_day">יום אימון חדש</span>
                     </button>
                     <button class="btn btn-cyan btn-sm" id="btn-modal-open-templates">
                         <i class="fa-solid fa-wand-magic-sparkles"></i>
-                        <span>תבניות פיצול מוכנות (PPL וכו')</span>
+                        <span data-i18n="btn_preset_templates">תבניות פיצול מוכנות (PPL וכו')</span>
                     </button>
                 </div>
 
@@ -553,7 +632,7 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-primary" data-close-modal="modal-manage-split-days">סיום</button>
+                <button type="button" class="btn btn-primary" data-close-modal="modal-manage-split-days" data-i18n="btn_done">סיום</button>
             </div>
         </div>
     </div>
@@ -564,7 +643,7 @@
             <div class="modal-header">
                 <h3 class="modal-title" id="modal-edit-split-day-title">
                     <i class="fa-solid fa-layer-group"></i>
-                    <span>הוספת יום אימון</span>
+                    <span data-i18n="modal_add_day_title">הוספת יום אימון</span>
                 </h3>
                 <button class="modal-close-btn" data-close-modal="modal-edit-split-day">
                     <i class="fa-solid fa-xmark"></i>
@@ -577,18 +656,18 @@
                     <input type="hidden" id="edit-day-color" value="#10b981">
 
                     <div class="form-group">
-                        <label class="form-label" for="edit-day-name">שם יום האימון / הפיצול *</label>
-                        <input type="text" id="edit-day-name" class="form-input" placeholder="למשל: חזה וכתפיים / פול בקרקע / Push Day" required>
+                        <label class="form-label" for="edit-day-name" data-i18n="label_day_name">שם יום האימון / הפיצול *</label>
+                        <input type="text" id="edit-day-name" class="form-input" data-i18n-ph="ph_day_name" placeholder="למשל: חזה וכתפיים / פול בקרקע / Push Day" required>
                     </div>
 
                     <div class="form-group">
-                        <label class="form-label" for="edit-day-schedule">תזמון או הערה (אופציונלי)</label>
-                        <input type="text" id="edit-day-schedule" class="form-input" placeholder="למשל: ימי ראשון ורביעי / אימון A / דגש כוח">
+                        <label class="form-label" for="edit-day-schedule" data-i18n="label_day_schedule">תזמון או הערה (אופציונלי)</label>
+                        <input type="text" id="edit-day-schedule" class="form-input" data-i18n-ph="ph_day_schedule" placeholder="למשל: ימי ראשון ורביעי / אימון A / דגש כוח">
                     </div>
 
                     <!-- Icon Picker -->
                     <div class="form-group">
-                        <label class="form-label">בחר אייקון ליום זה</label>
+                        <label class="form-label" data-i18n="label_choose_icon">בחר אייקון ליום זה</label>
                         <div class="icon-picker-grid" id="split-day-icon-picker">
                             <!-- Populated dynamically -->
                         </div>
@@ -596,7 +675,7 @@
 
                     <!-- Color Picker -->
                     <div class="form-group">
-                        <label class="form-label">בחר צבע נושא</label>
+                        <label class="form-label" data-i18n="label_choose_color">בחר צבע נושא</label>
                         <div class="color-picker-grid" id="split-day-color-picker">
                             <!-- Populated dynamically -->
                         </div>
@@ -604,10 +683,10 @@
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-close-modal="modal-edit-split-day">ביטול</button>
+                <button type="button" class="btn btn-secondary" data-close-modal="modal-edit-split-day" data-i18n="btn_cancel">ביטול</button>
                 <button type="submit" form="form-edit-split-day" class="btn btn-primary" id="btn-save-split-day">
                     <i class="fa-solid fa-check"></i>
-                    <span>שמור יום אימון</span>
+                    <span data-i18n="btn_save_day">שמור יום אימון</span>
                 </button>
             </div>
         </div>
@@ -619,14 +698,14 @@
             <div class="modal-header">
                 <h3 class="modal-title">
                     <i class="fa-solid fa-wand-magic-sparkles"></i>
-                    <span>בחירת תבנית פיצול מוכנה</span>
+                    <span data-i18n="templates_modal_title">בחירת תבנית פיצול מוכנה</span>
                 </h3>
                 <button class="modal-close-btn" data-close-modal="modal-split-templates">
                     <i class="fa-solid fa-xmark"></i>
                 </button>
             </div>
             <div class="modal-body">
-                <p style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 14px;">
+                <p style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 14px;" data-i18n="templates_modal_desc">
                     בחר תבנית פיצול מוכנה להחלה מהירה. תוכל לבחור אם להחליף את הימים הקיימים או להוסיף אליהם.
                 </p>
                 <div class="template-cards-grid" id="templates-cards-container">
@@ -634,7 +713,7 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-close-modal="modal-split-templates">סגור</button>
+                <button type="button" class="btn btn-secondary" data-close-modal="modal-split-templates" data-i18n="btn_close">סגור</button>
             </div>
         </div>
     </div>
@@ -669,6 +748,7 @@
     <div id="toast-container" class="toast-container"></div>
 
     <!-- Scripts -->
+    <script src="js/translations.js"></script>
     <script src="js/db.js"></script>
     <script src="js/app.js"></script>
 </body>

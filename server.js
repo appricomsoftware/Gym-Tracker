@@ -8,9 +8,11 @@ const MIME_TYPES = {
     '.css': 'text/css; charset=utf-8',
     '.js': 'application/javascript; charset=utf-8',
     '.json': 'application/json; charset=utf-8',
+    '.webmanifest': 'application/manifest+json; charset=utf-8',
     '.png': 'image/png',
     '.jpg': 'image/jpeg',
-    '.svg': 'image/svg+xml'
+    '.svg': 'image/svg+xml',
+    '.ico': 'image/x-icon'
 };
 
 const server = http.createServer((req, res) => {
@@ -26,7 +28,12 @@ const server = http.createServer((req, res) => {
         }
         const ext = path.extname(filePath).toLowerCase();
         const contentType = MIME_TYPES[ext] || 'application/octet-stream';
-        res.writeHead(200, { 'Content-Type': contentType });
+        const headers = { 'Content-Type': contentType };
+        if (path.basename(filePath) === 'sw.js') {
+            headers['Cache-Control'] = 'no-cache';
+            headers['Service-Worker-Allowed'] = '/';
+        }
+        res.writeHead(200, headers);
         res.end(data);
     });
 });

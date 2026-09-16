@@ -54,13 +54,26 @@ class GymDB {
     async seedDefaultDays() {
         const days = await this.getAllSplitDays();
         if (days.length === 0) {
-            const defaultDays = [
-                { id: 'chest_shoulders', name: 'חזה וכתפיים', icon: 'fa-dumbbell', color: '#38bdf8', order: 1, schedule: 'ימי ראשון ורביעי' },
-                { id: 'back_biceps', name: 'גב ויד קדמית', icon: 'fa-arrows-up-down', color: '#4ade80', order: 2, schedule: 'ימי שני וחמישי' },
-                { id: 'legs_abs', name: 'רגליים ובטן', icon: 'fa-person-running', color: '#f59e0b', order: 3, schedule: 'ימי שלישי' },
-                { id: 'arms_core', name: 'יד קדמית ואחורית', icon: 'fa-hand-back-fist', color: '#ec4899', order: 4, schedule: 'דגש זרועות' },
-                { id: 'full_body', name: 'אימון כללי / כוח', icon: 'fa-fire', color: '#a855f7', order: 5, schedule: 'אימון כוח מלא' }
-            ];
+            let defaultDays;
+            if (typeof I18N !== 'undefined' && typeof I18N.getTemplates === 'function') {
+                const tpls = I18N.getTemplates();
+                defaultDays = tpls[0].days.map((d, idx) => ({
+                    id: 'day_' + (idx + 1),
+                    name: d.name,
+                    icon: d.icon || 'fa-dumbbell',
+                    color: d.color || '#38bdf8',
+                    order: idx + 1,
+                    schedule: d.schedule || ''
+                }));
+            } else {
+                defaultDays = [
+                    { id: 'chest_shoulders', name: 'חזה וכתפיים', icon: 'fa-dumbbell', color: '#38bdf8', order: 1, schedule: 'ימי ראשון ורביעי' },
+                    { id: 'back_biceps', name: 'גב ויד קדמית', icon: 'fa-arrows-up-down', color: '#4ade80', order: 2, schedule: 'ימי שני וחמישי' },
+                    { id: 'legs_abs', name: 'רגליים ובטן', icon: 'fa-person-running', color: '#f59e0b', order: 3, schedule: 'ימי שלישי' },
+                    { id: 'arms_core', name: 'יד קדמית ואחורית', icon: 'fa-hand-back-fist', color: '#ec4899', order: 4, schedule: 'דגש זרועות' },
+                    { id: 'full_body', name: 'אימון כללי / כוח', icon: 'fa-fire', color: '#a855f7', order: 5, schedule: 'אימון כוח מלא' }
+                ];
+            }
             for (const day of defaultDays) {
                 await this.saveSplitDay(day);
             }
@@ -183,6 +196,7 @@ class GymDB {
                     machine.lastWeight = log.weight;
                     machine.lastReps = log.reps;
                     machine.lastSets = log.sets;
+                    machine.lastRepsPerSet = log.repsPerSet || null;
                     machine.lastDate = log.date;
                     machine.updatedAt = new Date().toISOString();
                     machineStore.put(machine);
