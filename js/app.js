@@ -480,7 +480,6 @@ function renderMachinesGrid() {
 
     emptyState.style.display = 'none';
 
-    const unitKg = I18N.t('unit_kg');
     const detailsHint = I18N.t('btn_open_details');
     const dragHint = I18N.t('drag_to_reorder');
 
@@ -495,10 +494,6 @@ function renderMachinesGrid() {
             ? `<img src="${machine.photoBase64}" alt="${escapeHtml(machine.name)}" class="row-thumb-img">`
             : `<div class="row-thumb-placeholder"><i class="fa-solid fa-dumbbell" style="color: ${primaryColor}99;"></i></div>`;
 
-        const lastNote = machine.lastWeight
-            ? `<span class="row-last">${machine.lastWeight} ${unitKg}</span>`
-            : '';
-
         return `
             <div class="machine-row" data-machine-id="${machine.id}">
                 <span class="row-day-strip" style="background: ${primaryColor};"></span>
@@ -508,11 +503,6 @@ function renderMachinesGrid() {
                 <div class="row-thumb">${thumb}</div>
                 <button type="button" class="row-main" onclick="openLogWorkoutModal('${machine.id}')">
                     <span class="row-title" title="${escapeHtml(machine.name)}">${escapeHtml(machine.name)}</span>
-                    <span class="row-meta">
-                        <span class="row-weight">${machine.defaultWeight || 0} ${unitKg}</span>
-                        <span class="row-reps">${machine.defaultSets || 3}×${machine.defaultReps || 10}</span>
-                        ${lastNote}
-                    </span>
                 </button>
                 <button type="button" class="row-details-btn" title="${detailsHint}" aria-label="${detailsHint}" onclick="openMachineDetailsModal('${machine.id}')">
                     <i class="fa-solid fa-circle-info"></i>
@@ -1954,6 +1944,12 @@ function setupWheelSteppers() {
         let acc = 0;
         let didSwipe = false;
         let startOnValue = false;
+
+        input.addEventListener('pointerdown', (e) => {
+            if (!col.classList.contains('wheel-stepper-weight')) return;
+            e.stopPropagation();
+            beginWheelEdit(col, input);
+        });
 
         col.addEventListener('pointerdown', (e) => {
             if (e.target.closest('button')) return;

@@ -484,10 +484,6 @@ body {
     font-weight: 600;
 }
 
-.row-weight {
-    color: var(--accent-lime);
-}
-
 .row-reps {
     color: var(--text-secondary);
 }

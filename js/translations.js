@@ -46,6 +46,7 @@ const I18N = {
             tap_to_view: 'לחץ לצפייה בפרטים',
             btn_open_details: 'פרטי מכשיר',
             drag_to_reorder: 'גרור לשינוי סדר',
+            edit_weight: 'לחץ כדי לשנות משקל',
             tap_to_enlarge: 'לחץ להגדלה',
             no_photo_placeholder: 'ללא תמונה',
 
@@ -161,6 +162,7 @@ const I18N = {
             btn_save_anyway: 'כן, שמור בכל זאת',
             btn_back_to_select: 'חזור ובחר יום',
             msg_machine_saved: 'נשמר בהצלחה!',
+            msg_weight_updated: 'המשקל עודכן',
             msg_save_error: 'לא ניתן לשמור את המכשיר:',
             confirm_delete_machine_title: 'מחיקת מכשיר',
             confirm_delete_machine_msg: 'האם אתה בטוח שברצונך למחוק את {name}? כל היסטוריית האימונים והגרפים של מכשיר זה יימחקו לצמיתות.',
@@ -232,6 +234,7 @@ const I18N = {
             tap_to_view: 'Tap to view details',
             btn_open_details: 'Machine details',
             drag_to_reorder: 'Drag to reorder',
+            edit_weight: 'Tap to edit weight',
             tap_to_enlarge: 'Tap to enlarge',
             no_photo_placeholder: 'No photo',
 
@@ -347,6 +350,7 @@ const I18N = {
             btn_save_anyway: 'Yes, Save Anyway',
             btn_back_to_select: 'Go Back & Select Day',
             msg_machine_saved: 'Machine saved successfully!',
+            msg_weight_updated: 'Weight updated',
             msg_save_error: 'Unable to save machine:',
             confirm_delete_machine_title: 'Delete Machine',
             confirm_delete_machine_msg: 'Are you sure you want to delete "{name}"? All training history and progression charts for this machine will be permanently removed.',
@@ -418,6 +422,7 @@ const I18N = {
             tap_to_view: 'اضغط لعرض التفاصيل',
             btn_open_details: 'تفاصيل الجهاز',
             drag_to_reorder: 'اسحب لتغيير الترتيب',
+            edit_weight: 'اضغط لتعديل الوزن',
             tap_to_enlarge: 'اضغط للتكبير',
             no_photo_placeholder: 'بدون صورة',
 
@@ -533,6 +538,7 @@ const I18N = {
             btn_save_anyway: 'نعم، حفظ على أي حال',
             btn_back_to_select: 'العودة لاختيار اليوم',
             msg_machine_saved: 'تم حفظ الجهاز بنجاح!',
+            msg_weight_updated: 'تم تحديث الوزن',
             msg_save_error: 'تعذر حفظ الجهاز:',
             confirm_delete_machine_title: 'حذف الجهاز',
             confirm_delete_machine_msg: 'هل أنت متأكد من حذف "{name}"؟ سيتم حذف جميع التمارين والرسوم البيانية لهذا الجهاز نهائياً.',
@@ -604,6 +610,7 @@ const I18N = {
             tap_to_view: 'Нажмите для просмотра',
             btn_open_details: 'Данные тренажера',
             drag_to_reorder: 'Перетащите, чтобы изменить порядок',
+            edit_weight: 'Нажмите, чтобы изменить вес',
             tap_to_enlarge: 'Нажмите для увеличения',
             no_photo_placeholder: 'Без фото',
 
@@ -719,6 +726,7 @@ const I18N = {
             btn_save_anyway: 'Да, все равно сохранить',
             btn_back_to_select: 'Вернуться и выбрать день',
             msg_machine_saved: 'Тренажер успешно сохранен!',
+            msg_weight_updated: 'Вес обновлен',
             msg_save_error: 'Не удалось сохранить тренажер:',
             confirm_delete_machine_title: 'Удаление тренажера',
             confirm_delete_machine_msg: 'Вы уверены, что хотите удалить "{name}"? Вся история тренировок и графики будут безвозвратно удалены.',

@@ -1,4 +1,4 @@
-const CACHE_NAME = 'gymmaster-v7';
+const CACHE_NAME = 'gymmaster-v11';
 const APP_ASSETS = [
     './',
     './index.html',
